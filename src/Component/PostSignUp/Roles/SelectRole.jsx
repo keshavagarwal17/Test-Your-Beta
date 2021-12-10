@@ -1,12 +1,8 @@
 import React from 'react'
 import {
-    Container,
     Segment,
     Form,
-    Button,
-    Dropdown,
-    Input,
-    Message,
+    Button
   } from "semantic-ui-react";
 
 const SelectRole = () => {
