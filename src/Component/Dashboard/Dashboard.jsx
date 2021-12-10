@@ -17,7 +17,7 @@ const Dashboard = () => {
                 <div className="status">
                   <div className="status-actions">
                     <div className="status-actions-element">
-                      <h1 className="colored"> Your Ideas</h1>
+                      <h1 className="colored"> Your Products</h1>
                     </div>
                   </div>
                 </div>
