@@ -7,8 +7,11 @@ import React from "react";
 import "semantic-ui-css/semantic.min.css";
 import Create from "./Component/Dashboard/Create/Create";
 import ProductPage from "./Component/ProductPage/ProductPage";
+import CompanyForm from "./Component/PostSignUp/DetailForms/CompanyForm";
+import UserForm from "./Component/PostSignUp/DetailForms/UserForm";
+import SelectRole from "./Component/PostSignUp/Roles/SelectRole";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import Web3 from "web3";
+import Web3 from "./web3/web3";
 import { newKitFromWeb3 } from "@celo/contractkit";
 const connectCeloWallet = async () => {
   if (window.celo) {
@@ -39,6 +42,9 @@ const App = () => {
             <Route exact path="/" component={Home} />
             <Route exact path="/dashboard" component={Dashboard} />
             <Route exact path="/dashboard/create" component={Create} />
+            <Route exact path="/company-form" component={CompanyForm} />
+            <Route exact path="/user-form" component={UserForm} />
+            <Route exact path="/select-role" component={SelectRole} />
             <Route exact path="/product" component={ProductPage} />
           </Switch>
         </Router>
