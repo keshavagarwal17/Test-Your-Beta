@@ -1,9 +1,6 @@
 pragma solidity >=0.4.1 >=0.8.1;
 
 
-contract company{
-
-}
 contract product{
     struct Review{
         string bestPart;
@@ -29,7 +26,13 @@ contract product{
         require(money != 0);
         _;
     }
-    
+    constructor(string memory title,string memory desc,string memory livelink,uint responses,uint money) NotZero(responses,money){
+        productTitle = title;
+        productDescription = desc;
+        totalMoney = money;
+        productLiveLink = livelink;
+        amountOfResponses = responses;
+    }
     function addAProduct(string memory title,string memory desc,string memory livelink,uint responses,uint money) public NotZero(responses,money){
         productTitle = title;
         productDescription = desc;
@@ -48,5 +51,21 @@ contract product{
     function currentBalance() public view returns(uint){
         return totalMoney;
     }
+}
 
+
+contract company{
+    uint numberOfProducts;
+    mapping(address=>product[]) allProducts;
+
+      modifier NotZero(uint responses, uint money){
+        require(responses != 0);
+        require(money != 0);
+        _;
+    }
+
+    function addAProduct(string memory title,string memory desc,string memory livelink,uint responses,uint money) public NotZero(responses,money){
+        product newProduct = new product(title,desc,livelink,responses,money);
+        allProducts[msg.sender].push(newProduct);
+    }
 }
