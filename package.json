@@ -4,9 +4,12 @@
   "private": true,
   "dependencies": {
     "@artsy/fresnel": "^3.1.1",
+    "@celo-tools/use-contractkit": "^2.0.1",
+    "@celo/contractkit": "^1.4.2",
     "@testing-library/jest-dom": "^5.11.4",
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
+    "bignumber.js": "^9.0.1",
     "dompurify": "^2.3.4",
     "draft-convert": "^2.1.12",
     "draft-js": "^0.11.7",
