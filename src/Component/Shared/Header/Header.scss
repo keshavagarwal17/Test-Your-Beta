@@ -37,6 +37,10 @@
         font-size: 15px;
         padding-right: 15px;
         margin: auto;
+        cursor: pointer;
+      }
+      h1:hover{
+        color: rgb(104, 104, 226);
       }
       @include display-config(space-around, center, row);
       @include font-config(15px, bold, rgb(161, 144, 144), "roboto");
