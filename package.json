@@ -10,6 +10,8 @@
     "@testing-library/react": "^11.1.0",
     "@testing-library/user-event": "^12.1.10",
     "bignumber.js": "^9.0.1",
+    "dotenv": "^10.0.0",
+    "firebase": "^9.6.1",
     "dompurify": "^2.3.4",
     "draft-convert": "^2.1.12",
     "draft-js": "^0.11.7",
