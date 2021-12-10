@@ -17,7 +17,7 @@
   border-bottom: 1px solid #9e9c9c;
 
   &-logo {
-    width: 100px;
+    width: 100px !important;
     height: 45px;
     margin-left: 1.2%;
   }
@@ -35,8 +35,11 @@
       h1 {
         padding-left: 10px;
         font-size: 15px;
-        padding-right: 15px;
+        padding-right: 13px;
         margin: auto;
+        text-align: center;
+        color: rgb(80, 80, 233);
+        cursor: pointer;
       }
       @include display-config(space-around, center, row);
       @include font-config(15px, bold, rgb(161, 144, 144), "roboto");
