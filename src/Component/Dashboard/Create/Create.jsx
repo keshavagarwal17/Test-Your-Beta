@@ -22,6 +22,8 @@ const Create = () => {
    const genderOptions = [
        { key: "male", text: "male" },
        { key: "female", text: "female" },
+       { key: "both", text: "both" },
+       { key: "no", text: "No gender preference" },
    ]
 
   const [editorState, setEditorState] = useState(() =>
@@ -41,6 +43,9 @@ const Create = () => {
     console.log(convertedContent);
   };
 
+//   Name, categories, -age, -gender, -product description, product (link, apk, installation file), product-usage doc, total budget
+
+
   return (
     <>
       <Container>
@@ -49,13 +54,9 @@ const Create = () => {
           Few things to note before describing your product
           <ul>
             <li>Write your statements to the point avoid using heavy jargon</li>
-            <li>Use media to explain your idea in a better way.</li>
+            <li>Use media to explain your product in a better way.</li>
             <li>
-              Involvement of facts and figure makes your idea more authentic
-            </li>
-            <li>
-              Aim for a solution approaching description while writing about
-              your idea.
+                Do write installation steps if needed
             </li>
           </ul>
         </Segment>
@@ -73,7 +74,7 @@ const Create = () => {
             </Form.Field>
 
             <Form.Field>
-              <label>Describe your product along with installation process: </label>
+              <label>Describe your product along with installation process and usage: </label>
               <Editor
                 editorState={editorState}
                 onEditorStateChange={handleEditorChange}
@@ -100,6 +101,15 @@ const Create = () => {
                 placeholder="Enter age upper bound"
               />
             </Form.Group>
+            <Form.Field
+                id="form-input-control-last-name"
+                control={Input}
+                name="link"
+                label="Link to your product"
+                // onChange={(e) => setEssentialValues(e)}
+                placeholder="Reference to where we can find your product"
+                type="text"
+              />
               <Form.Field
                 id="form-input-control-last-name"
                 control={Input}
@@ -109,6 +119,7 @@ const Create = () => {
                 placeholder="Enter amount to disburse"
                 type="number"
               />
+            <label> Select the gender preference (if any) </label>
             <Dropdown
                 placeholder="select your gender"
                 name="gender"
