@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Form, Segment } from "semantic-ui-react";
+import { Button, Form, Segment,Container } from "semantic-ui-react";
 import { useState,useContext } from "react";
 import {UserContext} from '../../../providers/userProvider'
 import {updateUserInfo} from '../../../services/auth'
@@ -71,6 +71,7 @@ const UserForm = () => {
       };
     return (
         <div>
+              <Container>
             <Segment style={{ paddingLeft: '2vw', marginTop: '5vh' }}>
                 <h2 style={{ marginBottom: '5vh' }}>User Details</h2>
                 <Form>
@@ -91,6 +92,7 @@ const UserForm = () => {
                     </Button>
                 </Form>
             </Segment>
+            </Container>
         </div>
     )
 }
