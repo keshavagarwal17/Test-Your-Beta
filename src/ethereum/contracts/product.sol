@@ -15,19 +15,16 @@ contract company{
         product newProduct = new product(title,desc,livelink,responses,money, ageMin, ageMax, gender);
         allProducts[msg.sender].push(newProduct);
         deployedProducts.push(newProduct);
+        numberOfProducts++;
     }
 
     function allProductsAddress() public view returns (product[] memory) {
         return deployedProducts;
     }
 
-        function getAllMyProducts(address userAddress)
-        public
-        view
-        returns (product[] memory)
-    {
+        function getAllMyProducts(address userAddress) public view returns (product[] memory){
         return allProducts[userAddress];
-    }
+        }
 }
 
 contract product{
@@ -46,6 +43,7 @@ contract product{
     uint maxAge;
     string sex;
     Review[] public reviews;
+    mapping(address=>uint) Ratings;
     address[] public reviewers;
     mapping(address=>Review) reviewByUser;
 
@@ -75,6 +73,30 @@ contract product{
         // payable(receiver).transfer(amount);
         receiver.transfer(amount);
     }
+
+
+    function payToAllReviewers(){
+      uint currentMoney = (amountOfResponses/reviewers.length)*totalMoney;
+      uint totalRating=0;
+      uint i;
+      uint rating;
+      address reviewerAddress;
+        for(i=0;i<reviewers.length;i++){
+          reviewerAddress = reviewers[i];
+          rating = Ratings[reviewerAddress];
+          totalRating +=rating;
+        }
+      uint ratingPerStar = currentMoney/totalRating;
+
+       for(i=0;i<reviewers.length;i++){
+          reviewerAddress = reviewers[i];
+          rating = Ratings[reviewerAddress];
+          uint amount = rating * ratingPerStar;
+          reviewerAddress.transfer(amount);
+        }
+    }
+
+
     function getAllReviewers() public view returns(address[] memory){
         return reviewers;
     }
