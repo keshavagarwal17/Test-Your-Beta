@@ -1,5 +1,21 @@
 pragma solidity >=0.4.17;
 
+contract company{
+    uint numberOfProducts;
+    mapping(address=>product[]) allProducts;
+
+      modifier NotZero(uint responses, uint money){
+        require(responses != 0);
+        require(money != 0);
+        _;
+    }
+
+    function addAProduct(string memory title,string memory desc,string memory livelink,uint responses,uint money) public NotZero(responses,money){
+        product newProduct = new product(title,desc,livelink,responses,money);
+        allProducts[msg.sender].push(newProduct);
+    }
+}
+
 contract product{
     struct Review{
         string bestPart;
@@ -41,7 +57,8 @@ contract product{
     }
 
     function sendMoney(address receiver, uint amount) public{
-        payable(receiver).transfer(amount);
+        // payable(receiver).transfer(amount);
+        receiver.transfer(amount);
     }
     function getAllReviewers() public view returns(address[] memory){
         return reviewers;
@@ -49,22 +66,5 @@ contract product{
 
     function currentBalance() public view returns(uint){
         return totalMoney;
-    }
-}
-
-
-contract company{
-    uint numberOfProducts;
-    mapping(address=>product[]) allProducts;
-
-      modifier NotZero(uint responses, uint money){
-        require(responses != 0);
-        require(money != 0);
-        _;
-    }
-
-    function addAProduct(string memory title,string memory desc,string memory livelink,uint responses,uint money) public NotZero(responses,money){
-        product newProduct = new product(title,desc,livelink,responses,money);
-        allProducts[msg.sender].push(newProduct);
     }
 }
