@@ -7,10 +7,10 @@ const ProductCard = (props) => {
     <Card
       link
       header={"Product Address " + props.data}
-      meta="Idea created by you"
+      meta="Product created by you"
       fluid
       style={{ marginTop: "10px" }}
-      description={["head in to see your idea review status !!"].join("")}
+      description={["head in to see your product review status !!"].join("")}
     />
   );
 };

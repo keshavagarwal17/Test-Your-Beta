@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import "./ProductDetail.scss";
-import { useParams } from "react-router";
+import { useParams } from "react-router-dom";
 import {
   Container,
   Segment,
@@ -15,8 +15,26 @@ import {
 import DOMPurify from "dompurify";
 import toast, { Toaster } from "react-hot-toast";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import product from "../../ethereum/product";
 
 const ProductDetail = () => {
+
+  const [allReviewers, setAllReviewers] = useState([]);
+  const [loading, setLoading] = useState(false);
+  const [currentAddress, setCurrentAddress] = useState("");
+  const { productAddress } = useParams();
+  const [productSummary, setProductSummary] = useState({
+    title: '',
+    description: '',
+    link: '',
+    amt: ''
+    // address: '',
+    // reviewLength: '',
+  });
+  // const [review, setReview] = useState({ title: "", description: "" });
+  const [productInstance, setProductInstance] = useState();
+  const [allReviews, setALlReviews] = useState([]);
+
   const [open, setOpen] = useState(false);
   const [openRatingModel, setOpenRatingModel] = useState(false);
 
@@ -26,28 +44,52 @@ const ProductDetail = () => {
     };
   };
 
+  const setProduct = async () => {
+    // console.log(" this is user age ", age);
+    setCurrentAddress(productAddress);
+    console.log(currentAddress);
+    console.log(productAddress)
+    const productInstance = product(productAddress);
+    setProductInstance(productInstance);
+    const productInfo = await productInstance.methods.getSummary().call();
+    setProductSummary({
+      title: productInfo[0],
+      description: productInfo[1],
+      link: productInfo[2],
+      amt: productInfo[4],
+    });
+    console.log(productInfo)
+    const addressOfReviewers = await productInstance.methods.getAllReviewers().call();
+    setAllReviewers(addressOfReviewers);
+    console.log(addressOfReviewers)
+}
+
+useEffect(() => {
+ setProduct()
+}, [productAddress]);
+
   return (
     <>
       <Toaster />
       <Container style={{ marginTop: "20px" }}>
         <Segment>
           <b>Title: </b>
-          Title
+          {productSummary.title}
         </Segment>
         <Segment>
           <b>Description along with installation and usage: </b> <br />
           <div
             className="preview"
             dangerouslySetInnerHTML={createMarkup(
-              "<h1> this will be description</h1>"
+              productSummary.description
             )}
           ></div>
         </Segment>
         <Segment>
-          <b>Link to Product: </b> <br />
+          <b>Link to Product:</b> {productSummary.link}  <br />
         </Segment>
         <Segment>
-          <b>Amount:</b> 1eth
+          <b>Amount:</b> {productSummary.amt}eth
         </Segment>
         <Header as="h1">All Reviews</Header>
         <Segment>
