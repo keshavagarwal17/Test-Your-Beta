@@ -164,7 +164,6 @@ const IdeaPage = () => {
       })
       setLoading(false)
       toast.success("Review added successfully")
-      setProduct()
     } catch(err) {
       console.log(err.message)
       toast.error("Something bad happend !!")
