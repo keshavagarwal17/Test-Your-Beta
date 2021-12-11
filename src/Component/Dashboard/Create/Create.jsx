@@ -23,14 +23,14 @@ const Create = () => {
   const [loading, setLoading] = useState(false);
   const [errMessage, setErrMessage] = useState('');
   const [product, setProduct] = useState({
-    title: 'dsd',
-    ageMin: '1',
-    ageMax: '1',
-    link: 'dsd',
-    desc: 'dsds',
-    amt: '1',
+    title: 'this is title',
+    ageMin: '19',
+    ageMax: '20',
+    link: 'this is link',
+    desc: 'this is desp',
+    amt: '100',
     gender: 'male',
-    responses: '1'
+    responses: '5'
     })
 
     const setProductValues = (e) => {

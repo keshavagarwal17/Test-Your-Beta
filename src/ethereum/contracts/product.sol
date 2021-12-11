@@ -20,6 +20,14 @@ contract company{
     function allProductsAddress() public view returns (product[] memory) {
         return deployedProducts;
     }
+
+        function getAllMyProducts(address userAddress)
+        public
+        view
+        returns (product[] memory)
+    {
+        return allProducts[userAddress];
+    }
 }
 
 contract product{
