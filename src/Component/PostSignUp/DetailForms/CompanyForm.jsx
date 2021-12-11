@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Form, Segment } from "semantic-ui-react";
+import { Button, Form, Segment , Container } from "semantic-ui-react";
 import { useState } from "react";
 
 
@@ -15,11 +15,11 @@ const CompanyForm = () => {
             isTextArea: false,
         },
         {
-            label: "Types of Products",
+            label: "About your company",
             placeholder: "Mention the types of products you build",
             name: "productType",
             type: "text",
-            isTextArea: false,
+            isTextArea: true,
         },
     ]
     const setInfo = (e) => {
@@ -57,6 +57,7 @@ const CompanyForm = () => {
       };
     return (
         <div>
+          <Container>
             <Segment style={{ paddingLeft: '2vw', marginTop: '5vh' }}>
                 <h2 style={{ marginBottom: '5vh' }}>Company Details</h2>
                 <Form>
@@ -71,6 +72,7 @@ const CompanyForm = () => {
                     </Button>
                 </Form>
             </Segment>
+          </Container>
         </div>
     )
 }
