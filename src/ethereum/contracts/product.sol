@@ -11,21 +11,20 @@ contract company{
         _;
     }
 
-    function addAProduct(string memory title,string memory desc,string memory livelink,uint responses,uint money) public NotZero(responses,money){
-        product newProduct = new product(title,desc,livelink,responses,money);
+    function addAProduct(string memory title,string memory desc,string memory livelink,uint responses,uint money, uint ageMin, uint ageMax, string memory gender) public NotZero(responses,money){
+        product newProduct = new product(title,desc,livelink,responses,money, ageMin, ageMax, gender);
         allProducts[msg.sender].push(newProduct);
         deployedProducts.push(newProduct);
+    }
+
+    function allProductsAddress() public view returns (product[] memory) {
+        return deployedProducts;
     }
 }
 
 contract product{
     struct Review{
-        string bestPart;
-        string enhancement;
-        bool stuckSomewhere;
-        uint rating;
-        bool wouldRecommend;
-        string bug;
+        string cid;
     }
 
     string productTitle;
@@ -33,6 +32,9 @@ contract product{
     string productLiveLink;
     uint amountOfResponses;
     uint totalMoney;
+    uint minAge;
+    uint maxAge;
+    string sex;
     Review[] public reviews;
     address[] public reviewers;
     mapping(address=>Review) reviewByUser;
@@ -43,19 +45,15 @@ contract product{
         require(money != 0);
         _;
     }
-    constructor(string memory title,string memory desc,string memory livelink,uint responses,uint money) NotZero(responses,money){
+    constructor(string memory title,string memory desc,string memory livelink,uint responses,uint money,uint ageMin, uint ageMax, string memory gender) NotZero(responses,money){
         productTitle = title;
         productDescription = desc;
         totalMoney = money;
         productLiveLink = livelink;
         amountOfResponses = responses;
-    }
-    function addAProduct(string memory title,string memory desc,string memory livelink,uint responses,uint money) public NotZero(responses,money){
-        productTitle = title;
-        productDescription = desc;
-        totalMoney = money;
-        productLiveLink = livelink;
-        amountOfResponses = responses;
+        minAge = ageMin;
+        maxAge = ageMax;
+        sex = gender;
     }
 
     function sendMoney(address receiver, uint amount) public{
@@ -68,5 +66,33 @@ contract product{
 
     function currentBalance() public view returns(uint){
         return totalMoney;
+    }
+
+        function getSummary()
+        public
+        view
+        returns (
+            string memory,
+            string memory,
+            string memory,
+            uint,
+            uint,
+            uint,
+            uint,
+            string memory,
+            uint
+        )
+    {
+        return (
+                productTitle,
+    productDescription,
+    productLiveLink,
+    amountOfResponses,
+    totalMoney,
+    minAge,
+    maxAge,
+    sex,
+    reviews.length
+        );
     }
 }

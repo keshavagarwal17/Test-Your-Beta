@@ -21,8 +21,6 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { create } from "ipfs-http-client";
 import IPFS from "ipfs-mini";
 
-
-
 const IdeaPage = () => {
     const [client, setClient] = useState(null);
     const [open, setOpen] = useState(false)

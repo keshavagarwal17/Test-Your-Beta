@@ -41,7 +41,7 @@ const Header = () => {
         </div>
         <div className="head-content-profile">
          
-         <Link to="/product">
+         <Link to="/exploration">
          <h1>
            See Products
           </h1>

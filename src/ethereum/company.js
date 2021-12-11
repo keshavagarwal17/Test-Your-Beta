@@ -1,43 +1,9 @@
-// import Company from './build/company.json'
-// import Web3 from 'web3'
-// const web3 = new Web3('https://alfajores-forno.celo-testnet.org')
-// // const Web3 = require('web3')
-// const ContractKit = require('@celo/contractkit')
-// // const web3 = new Web3('https://alfajores-forno.celo-testnet.org')
+import web3 from "./web3";
+import Manager from "./build/company.json";
 
-// let instance;
-// async function initContract(){
-//     const kit = ContractKit.newKitFromWeb3(web3)
+const instance = new web3.eth.Contract(
+  JSON.parse(Manager.interface),
+  "0x5BD09F39019ad2C335d183c02cdBe66E829328D9"
+);
 
-//     // Check the Celo network ID
-//     // const networkId = await web3.eth.net.getId()
-
-//     // Get the contract associated with the current network
-//     // const deployedNetwork = Company.networks[networkId]
-
-//     // Create a new contract instance with the HelloWorld contract info
-//     instance = new kit.web3.eth.Contract(
-//         JSON.parse(Company.interface),
-//         '0x03ea0d3B75d2e6470CFd3B53224644384461A8b6'
-//         // deployedNetwork && deployedNetwork.address
-
-//     )
-// }
-// initContract()
-// export default instance
-/* eslint-disable import/no-anonymous-default-export */
-import Company from "./build/company.json";
-import Web3 from "web3";
-const web3 = new Web3("https://alfajores-forno.celo-testnet.org");
-// const Web3 = require('web3')
-const ContractKit = require("@celo/contractkit");
-// const web3 = new Web3('https://alfajores-forno.celo-testnet.org')
-
-  const kit = ContractKit.newKitFromWeb3(web3);
-let instance = new kit.web3.eth.Contract(
-    JSON.parse(Company.metadata).output.abi,
-    "0xD25A8476918339908d9c5F631dD65D02564b0F51"
-    // deployedNetwork && deployedNetwork.address
-  );
-
-  export default instance;
+export default instance;
