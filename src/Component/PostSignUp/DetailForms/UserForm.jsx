@@ -1,5 +1,5 @@
 import React from 'react'
-import { Button, Form, Segment,Container } from "semantic-ui-react";
+import { Button, Form, Segment,Container, Select } from "semantic-ui-react";
 import { useState,useContext } from "react";
 import {UserContext} from '../../../providers/userProvider'
 import {updateUserInfo} from '../../../services/auth'
@@ -8,7 +8,7 @@ const UserForm = () => {
     const [data, setData] = useState({});
     const {info,fetchInfo} = useContext(UserContext);
     const {user,isLoading} = info;
-    const gender = [
+    const genderOptions = [
         { key: 'm', text: 'Male', value: 'male' },
         { key: 'f', text: 'Female', value: 'female' },
         { key: 'o', text: 'Other', value: 'other' },
@@ -25,10 +25,10 @@ const UserForm = () => {
         {
             label: "Age",
             placeholder: "Enter your age",
-            name: "dob",
-            type: "date",
+            name: "age",
+            type: "number",
             isTextArea: false,
-          },
+        },
     ]
 
     const handleSubmit = async()=>{
@@ -41,6 +41,7 @@ const UserForm = () => {
           ...data,
           [e.target.name]: e.target.value,
         });
+        console.log(data);
       };
     const renderFormElements = () => {
         return formElement.map((ele, index) => (
@@ -76,11 +77,17 @@ const UserForm = () => {
                 <h2 style={{ marginBottom: '5vh' }}>User Details</h2>
                 <Form>
                     {renderFormElements()}
-                    <Form.Select
-                        fluid
-                        label='Gender'
-                        options={gender}
-                        placeholder='Gender'
+                    <Form.Field
+                      control={Select}
+                      label='Gender'
+                      options={genderOptions}
+                      placeholder='Select your Gender'
+                      onChange={(e, { value }) => {
+                        setData({
+                          ...data,
+                          gender: value
+                        })
+                      }}
                     />
                     <Button
                     color="green"
