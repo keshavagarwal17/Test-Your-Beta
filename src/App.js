@@ -28,7 +28,7 @@ const App = () => {
             <Route exact path="/dashboard/create" component={Create} />
             <Route
               exact
-              path="/dashboard/detail/:id"
+              path="/dashboard/your-product/:id"
               component={ProductDetail}
             />
             <Route exact path="/company-form" component={CompanyForm} />
