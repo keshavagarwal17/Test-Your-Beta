@@ -1,8 +1,3 @@
-// const getReviewData = async (reviewId) => {
-//     ipfsInstance.catJSON(reviewId).then((data, err) => console.log(data))
-//     return "ok"
-//    }
-/* eslint-disable react/prop-types */
 import React, { useContext, useEffect, useState } from "react";
 import "./Review.scss";
 import {
@@ -19,37 +14,29 @@ import {
 import toast, { Toaster } from "react-hot-toast";
 import product from "../../../ethereum/product";
 import web3 from "../../../ethereum/web3";
+import IPFS from 'ipfs-mini'
+import DOMPurify from "dompurify";
+
 
 const Review = (props) => {
-  const [ideaInstance, setIdeaInstance] = useState();
+  const [productInstance, setProductInstance] = useState();
   const [loading, setLoading] = useState(false);
   const [transactionLoading, setTransactionLoading] = useState(false);
   const [open, setOpen] = useState(false);
+  const [ipfsInstance, setIpfsInstance] = useState(null);
   const [addMoney, setAddMoney] = useState({ amt: "" });
   const [currentAccount, setCurrentAccount] = useState('')
+  const [review, setReview] = useState({
+    bestpart: '',
+    improvement: '',
+    stuck: '',
+    rating: 0,
+    recommend: '',
+    bug: ''
+  })
 //   const info = useContext(UserContext);
 //   const { userAddress } = info;
   console.log(props);
-
-//   const initTransaction = async () => {
-//     try {
-//       setTransactionLoading(true);
-//       console.log(addMoney);
-//       console.log(
-//         props.data[3] + " " + web3.utils.toWei(addMoney.amt, "ether")
-//       );
-//       await ideaInstance.methods
-//         .rewardReviewer(props.data[3], web3.utils.toWei(addMoney.amt, "ether"))
-//         .send({
-//           from: userAddress,
-//           type: "0x2",
-//         });
-//       setTransactionLoading(false);
-//       window.location.reload();
-//     } catch (err) {
-//       console.log(err.message);
-//     }
-//   };
 
 const setAccount = async () => {
     const accounts = await web3.eth.getAccounts();
@@ -58,21 +45,24 @@ const setAccount = async () => {
 
   useEffect(() => {
     // if (userAddress) {
-      const idea = product(props.ideaAddress);
-      setIdeaInstance(idea);
+        console.log("this is", props.element)
+      setAccount()
+      const productInstance = product(props.productAddress);
+      setProductInstance(productInstance);
       console.log("ideainstance is defined now ");
+      setReviewData()
     // }
   }, []);
 
   const approveReview = async (reviewIndex) => {
     try {
       if (props.allReviewers.includes(currentAccount)) {
-        toast("You already bagged it !!");
+        toast("You already approved it !!");
       } else {
         setLoading(true);
-        await ideaInstance.methods
-          .approveReview(reviewIndex)
-          .send({ from: currentAccount, type: "0x2" });
+        await productInstance.methods
+          .approve(reviewIndex)
+          .send({ from: currentAccount });
         toast.success("Review approved successfully");
         setLoading(false);
         setOpen(false);
@@ -80,23 +70,73 @@ const setAccount = async () => {
       }
     } catch (err) {
       console.log(err.message);
-      toast.error("falied to approve review!!");
+      toast.error("falied to approve review (you must hav already reviewed)!!");
     }
   };
+
+  useEffect(() => {
+    const ipfs = new IPFS({
+      host: "ipfs.infura.io",
+      port: 5001,
+      protocol: "https"
+    });
+    setIpfsInstance(ipfs);
+  },[])
+
+  const setReviewData = () => {
+      console.log(props.data + "and" + props.data.cid)
+      if(ipfsInstance) {
+      ipfsInstance.catJSON(props.data.cid).then((data, err) => {
+          setReview({
+                bestpart: data.bestpart,
+                improvement: data.improvement,
+                stuck: data.stuck,
+                rating: data.rating,
+                recommend: data.recommend,
+                bug: data.bug
+          })
+          console.log(data)
+      })
+      }
+  }
+
+  const createMarkup = (html) => {
+    return {
+      __html: DOMPurify.sanitize(html),
+    };
+  };
+
+  useEffect(() => {
+      setReviewData()
+  }, [ipfsInstance])
 
   return (
     <>
       <Toaster />
       <Card fluid>
-        <Card.Content header={"Reviewer: " + props.data.recipient} />
+        <Card.Content header={"Reviewer: " + props.data.from} />
         <Card.Content>
           <Segment>
-            <b> Title: </b>
-            {props.data.description}
-            <br />
-            <br />
-            <b>Description: </b>
-            {props.data.title}
+          <h3> Best part of our product which you like </h3>
+            <p>{review.bestpart}</p>
+            <h3> What can be improved further </h3>
+            <p>
+                {review.improvement}
+              do.
+            </p>
+            <h3> Did it stuck any where while using it </h3>
+            <p>{review.improvement}</p>
+            <h3> How much you will rate on rating on 10 </h3>
+            <p>{review.rating}</p>
+            <h3> Would you recommend this to your friend </h3>
+            <p>{review.recommend}</p>
+            <h3>
+              If you find any bug do mention it along with it's screenshots
+            </h3>
+            <div
+            className="preview"
+            dangerouslySetInnerHTML={createMarkup(review.bug)}
+          ></div>
           </Segment>
         </Card.Content>
         <Card.Content extra>
@@ -106,7 +146,7 @@ const setAccount = async () => {
             trigger={
               <Button color="green" floated="right">
                 <Icon name="user" />
-                {props.data.approvalCount} Approval
+                {props.data.approval} Approval
               </Button>
             }
             onClose={() => setOpen(false)}
@@ -132,33 +172,6 @@ const setAccount = async () => {
               </>
             </Modal.Actions>
           </Modal>
-
-          {props.isAdmin ? (
-            <div>
-              <Form>
-                <Form.Group>
-                  <Form.Field
-                    id="form-input-control-last-name"
-                    control={Input}
-                    name="amt"
-                    onChange={(e) =>
-                      setAddMoney({ [e.target.name]: e.target.value })
-                    }
-                    placeholder="Enter amount and reward reviewer"
-                    type="text"
-                  />
-                  <br />
-                  <Button
-                    content="Reward him"
-                    color="red"
-                    icon="money"
-                    // onClick={() => initTransaction()}
-                    loading={transactionLoading}
-                  />
-                </Form.Group>
-              </Form>
-            </div>
-          ) : null}
         </Card.Content>
       </Card>
     </>
