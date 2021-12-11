@@ -30,6 +30,7 @@ const IdeaPage = () => {
     const [ipfsInstance, setIpfsInstance] = useState(null);
     const [allReviewers, setAllReviewers] = useState([]);
     const [loading, setLoading] = useState(false);
+    const [reviewLen, setReviewLen] = useState(0);
     const [currentAddress, setCurrentAddress] = useState("");
     const { productAddress } = useParams();
     // const [review, setReview] = useState({ title: "", description: "" });
@@ -76,25 +77,26 @@ const IdeaPage = () => {
 
   useEffect(() => {
     try {
-      console.log(" this is called ", productSummary.reviewLength);
+      console.log(" this is called ", reviewLen);
       const reviews = [];
       const reviewLengthArray = Array.from(
-        Array(productSummary.reviewLength).keys()
+        Array(reviewLen).keys()
       );
+      console.log(reviewLengthArray, productSummary.reviewLength);
       const productInstance = product(productAddress);
       reviewLengthArray.map(async (i) => {
         
         const particularReview = await productInstance.methods.reviews(i).call();
         reviews.push(particularReview);
         console.log(particularReview);
-        // setALlReviews((allReviews) => [...allReviews, particularReview]);
+        setALlReviews((allReviews) => [...allReviews, particularReview]);
       });
-      setALlReviews(reviews)
+      // setALlReviews(reviews)
       console.log(allReviews)
     } catch (err) {
       console.log(err.message);
     }
-  }, [productSummary]);
+  }, [reviewLen]);
 
   const setProduct = async () => {
        // console.log(" this is user age ", age);
@@ -115,6 +117,7 @@ const IdeaPage = () => {
         reviewLength: productInfo[7],
       });
        console.log("this are address opf reviews", addressOfReviewers)
+       setReviewLen(addressOfReviewers.length)
   }
 
   useEffect(() => {
@@ -155,12 +158,15 @@ const IdeaPage = () => {
 
   const addReviewToNetwork = async (reviewId) => {
     try {
+      setLoading(true);
       await productInstance.methods.addReview(reviewId).send({
         from: currentAccount
       })
-      setProduct()
+      setLoading(false)
+      toast.success("Review added successfully")
     } catch(err) {
       console.log(err.message)
+      toast.error("Something bad happend !!")
     }
   }
 
@@ -168,7 +174,15 @@ const IdeaPage = () => {
     setReview({
       ...review, bug: convertedContent
     })
-    const reviewId = await ipfsInstance.addJSON(review);
+    const obj = {
+      bestpart: review.bestpart,
+      improvement: review.improvement,
+      stuck: review.stuck,
+      rating: review.rating,
+      recommend: review.recommend,
+      bug: convertedContent
+    }
+    const reviewId = await ipfsInstance.addJSON(obj);
     console.log("cid", reviewId)
     console.log("final review", reviewId)
     addReviewToNetwork(reviewId)
@@ -272,6 +286,7 @@ const IdeaPage = () => {
               <Button
                 color="green"
                 onClick={() => addReview()}
+                loading = {loading}
               >
                 <Icon name="add" /> Add Review
               </Button>
@@ -285,9 +300,10 @@ const IdeaPage = () => {
                 key={index}
                 data={element}
                 index={index}
-                // ideaAddress={ideaAddress}
+                productAddress={productAddress}
                 allReviewers={allReviewers}
-                isAdmin={false}
+                ipfsInstance = {ipfsInstance}
+                // isAdmin={false}
               />
             );
           })}

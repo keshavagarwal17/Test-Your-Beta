@@ -3,19 +3,18 @@ import Navigation from "../Shared/Navigation/Navigation";
 import "./Dashboard.scss";
 import { NavLink } from "react-router-dom";
 import Loader from "../Shared/Loader/Loader";
-import company from '../../ethereum/company'
-import web3 from '../../ethereum/web3'
+import company from "../../ethereum/company";
+import web3 from "../../ethereum/web3";
 import ProductCard from "../Shared/Card/Card";
-
+import Reviews from "../../data/Reviews.json";
 const Dashboard = () => {
-
   const [myProducts, setMyProducts] = useState([]);
   const [fetchAllProducts, setFetchedProducts] = useState(false);
 
   const fetchMyProduct = async () => {
     try {
       const accounts = await web3.eth.getAccounts();
-      console.log(accounts[0], company.methods)
+      console.log(accounts[0], company.methods);
       setFetchedProducts(true);
       let userAddress = accounts[0];
       // const balance = await Factory.methods.getUserBalance(userAddress).call();
@@ -31,10 +30,14 @@ const Dashboard = () => {
     } catch (err) {
       console.log(err.message);
     }
-  }
-
+  };
+  const fetchData = async () => {
+    const data = Reviews;
+    setMyProducts(data);
+  };
   useEffect(() => {
-    fetchMyProduct()
+    // fetchMyProduct()
+    fetchData();
   }, []);
 
   return (
@@ -53,7 +56,7 @@ const Dashboard = () => {
                   </div>
                 </div>
                 <div className="contain">
-                {myProducts.map((address, index) => {
+                  {myProducts.map((address, index) => {
                     return (
                       <NavLink
                         key={index}

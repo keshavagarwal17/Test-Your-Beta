@@ -1,14 +1,28 @@
 import React from 'react'
 import { Button, Form, Segment,Container } from "semantic-ui-react";
-import { useState, useContext } from "react";
-import {UserContext} from '../../../providers/userProvider'
+import { useState, useContext,useEffect } from "react";
+import {UserContext,fetchInfo} from '../../../providers/userProvider'
 import {updateUserInfo} from '../../../services/auth'
-
+import {useHistory } from 'react-router-dom';
 
 const CompanyForm = () => {
-    const [data, setData] = useState({});
-    const {info,fetchInfo} = useContext(UserContext);
-    const {user,isLoading} = info;
+  const {info} = useContext(UserContext);
+  const {user,isLoading} = info;
+  const [data, setData] = useState({});
+  const [isEdit,setEdit] = useState(false);
+  const history = useHistory();
+
+  useEffect(()=>{
+    if(!isLoading){
+      if(user.companyName){
+        setEdit(true);
+      }
+      setData(
+        {companyName:user.companyName,productType: user.productType}
+      )
+    }
+  },[info])
+
     const labelStyle = { fontSize: "15px" };
     const formElement = [
         {
@@ -29,6 +43,9 @@ const CompanyForm = () => {
     const handleSubmit = async()=>{
       await updateUserInfo(data,user.uid);
       fetchInfo();
+      if(isEdit){
+        history.push("/dashboard");
+      }
     }
     const setInfo = (e) => {
         setData({
@@ -49,6 +66,7 @@ const CompanyForm = () => {
                 placeholder={ele.placeholder}
                 type={ele.type}
                 onChange={(e) => setInfo(e)}
+                value={data[ele.name]}
                 required
               />
             ) : (
@@ -57,6 +75,7 @@ const CompanyForm = () => {
                 name={ele.name}
                 placeholder={ele.placeholder}
                 onChange={(e) => setInfo(e)}
+                value={data[ele.name]}
                 required
               />
             )}
@@ -76,7 +95,7 @@ const CompanyForm = () => {
                     type="submit"
                     onClick={handleSubmit}
                     >
-                    Submit
+                    {user.companyName?"Update":"Submit"}
                     </Button>
                 </Form>
             </Segment>

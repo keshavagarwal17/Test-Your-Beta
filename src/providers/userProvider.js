@@ -11,20 +11,15 @@ export const UserContext = createContext({
 let fetchInfo;
 const UserProvider = (props) => {
   const [info, setInfo] = useState({ user: null, isLoading: true });
-  const [userId, setUserId] = useState("pall");
-  let tem = "HELLO";
-  console.log("from the top of file", userId);
+  const [userId, setUserId] = useState("");
 
-  fetchInfo = async (a) => {
+  fetchInfo = async () => {
     await setInfo({
       ...info,
       isLoading: true,
     });
-    await console.log("flag", a, tem);
-    await console.log("userId", userId);
     let docRef, docSnap;
     if (userId) {
-      console.log("going for docRef");
       docRef = doc(db, "users", userId);
       docSnap = await getDoc(docRef);
     }
@@ -44,9 +39,7 @@ const UserProvider = (props) => {
 
   useEffect(() => {
     const temFun = async () => {
-      console.log("are value change ho gyi", userId);
       if (userId) {
-        console.log("calling from fetchInfo");
         await fetchInfo(1);
       }
     };
@@ -59,12 +52,10 @@ const UserProvider = (props) => {
       if (person) {
         console.log(person);
         const { uid } = person;
-
-        console.log("UID is", uid);
         setUserId(uid);
       } else {
         console.log("user is not loggedIn");
-        setUserId("during-signout");
+        setUserId(null);
         setInfo({
           user: null,
           isLoading: false,
@@ -74,7 +65,7 @@ const UserProvider = (props) => {
   }, []);
 
   return (
-    <UserContext.Provider value={{ info, fetchInfo, userId }}>
+    <UserContext.Provider value={{ info, fetchInfo }}>
       {props.children}
     </UserContext.Provider>
   );

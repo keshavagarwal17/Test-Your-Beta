@@ -11,14 +11,11 @@ import { fetchInfo } from "../../../providers/userProvider";
 const Header = () => {
   const history = useHistory();
   const location = useLocation();
-  const { info, userId } = useContext(UserContext);
+  const { info } = useContext(UserContext);
   const { user, isLoading } = info;
   const handleSignIn = async () => {
     await signInWithGoogle();
-    console.log("calling from header");
-    console.log(userId);
-    console.log(user);
-    await fetchInfo(2);
+    await fetchInfo();
   };
 
   useEffect(() => {
