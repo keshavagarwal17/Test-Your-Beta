@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 import { Container, Divider, Header, Grid } from "semantic-ui-react";
-// import productCard from "../../Shared/productCard/productCard";
+import ProductCard from "../Shared/productCard/ProductCard";
 import company from '../../ethereum/company';
 import { NavLink } from "react-router-dom";
 import Loader from '../Shared/Loader/Loader';
@@ -72,18 +72,19 @@ const Exploration = () => {
         <Grid stackable columns={3}>
           {allproducts.filter(filterproduct).map((product, index) => {
             return (
-                <h1> {product.address} </h1>
-            //   <Grid.Column key={index}>
-            //     <Container fluid textAlign="center">
-            //       <NavLink
-            //         exact
-            //         activeClassName="current"
-            //         to={`/user/dashboard/exploration/${product.address}`}
-            //       >
-            //         <productCard data={product} />
-            //       </NavLink>
-            //     </Container>
-            //   </Grid.Column>
+              <Grid.Column key={index}>
+                <Container fluid textAlign="center">
+                  <NavLink
+                    exact
+                    activeClassName="current"
+                    to={`/dashboard/exploration/${product.address}`}
+                  >
+                    <ProductCard 
+                    data={product}
+                     />
+                  </NavLink>
+                </Container>
+              </Grid.Column>
             );
           })}
         </Grid>

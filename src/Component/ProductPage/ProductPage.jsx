@@ -1,6 +1,6 @@
 import React, { useEffect, useState, useContext } from "react";
 import "./ProductPage.scss";
-import { useParams } from "react-router";
+import { useParams } from "react-router-dom";
 import {
   Container,
   Segment,
@@ -20,14 +20,30 @@ import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { create } from "ipfs-http-client";
 import IPFS from "ipfs-mini";
+import product from "../../ethereum/product";
 
 const IdeaPage = () => {
     const [client, setClient] = useState(null);
     const [open, setOpen] = useState(false)
     const [ipfsInstance, setIpfsInstance] = useState(null);
+    const [allReviewers, setAllReviewers] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [currentAddress, setCurrentAddress] = useState("");
+    const { productAddress } = useParams();
+    // const [review, setReview] = useState({ title: "", description: "" });
+    const [productInstance, setProductInstance] = useState();
+    const [allReviews, setALlReviews] = useState([]);
+    const [productSummary, setProductSummary] = useState({
+      title: '',
+      link: '',
+      descp: '',
+      amt: '',
+      reviewLength: '',
+    });
     const [editorState, setEditorState] = useState(() =>
     EditorState.createEmpty()
   );
+
   const [review, setReview] = useState({
     bestpart: '',
     improvement: '',
@@ -45,6 +61,30 @@ const IdeaPage = () => {
     });
     setIpfsInstance(ipfs);
   },[])
+
+  const setProduct = async () => {
+       // console.log(" this is user age ", age);
+       setCurrentAddress(productAddress);
+       console.log(currentAddress);
+       console.log(productAddress)
+       const productInstance = product(productAddress);
+       setProductInstance(productInstance);
+       const productInfo = await productInstance.methods.getSummary().call();
+       // setProductSummary({
+       //   title: productInfo[0],
+       //   description: productInfo[1],
+       //   address: productInfo[2],
+       //   reviewLength: productInfo[3],
+       // });
+       console.log(productInfo)
+       const addressOfReviewers = await productInstance.methods.getAllReviewers().call();
+       setAllReviewers(addressOfReviewers);
+       console.log(addressOfReviewers)
+  }
+
+  useEffect(() => {
+    setProduct()
+  }, []);
 
   const setReviewValues = (e) => {
     setReview({ ...review, [e.target.name]: e.target.value });
