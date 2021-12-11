@@ -1,10 +1,13 @@
 import React from 'react'
 import { Button, Form, Segment } from "semantic-ui-react";
-import { useState } from "react";
-
+import { useState,useContext } from "react";
+import {UserContext} from '../../../providers/userProvider'
+import {updateUserInfo} from '../../../services/auth'
 
 const UserForm = () => {
     const [data, setData] = useState({});
+    const {info,fetchInfo} = useContext(UserContext);
+    const {user,isLoading} = info;
     const gender = [
         { key: 'm', text: 'Male', value: 'male' },
         { key: 'f', text: 'Female', value: 'female' },
@@ -13,21 +16,26 @@ const UserForm = () => {
     const labelStyle = { fontSize: "15px" };
     const formElement = [
         {
-            label: "Interested Categories of applications",
+            label: "Name",
             placeholder: "Write categories of applications e.g. Banking, Food-Ordering, Trivia, Gaming etc.",
-            name: "companyName",
+            name: "userName",
             type: "text",
             isTextArea: false,
         },
         {
             label: "Age",
-            placeholder:
-              "Enter your age",
-            name: "age",
-            type: "number",
+            placeholder: "Enter your age",
+            name: "dob",
+            type: "date",
             isTextArea: false,
           },
     ]
+
+    const handleSubmit = async()=>{
+      await updateUserInfo(data,user.uid);
+      fetchInfo();
+    }
+
     const setInfo = (e) => {
         setData({
           ...data,

@@ -1,4 +1,6 @@
-import React from 'react'
+import React,{useContext} from 'react'
+import {UserContext} from '../../../providers/userProvider'
+import { updateUserInfo } from "../../../services/auth";
 import {
     Segment,
     Form,
@@ -7,7 +9,16 @@ import {
 
 const SelectRole = () => {
     const [role, setRole] = React.useState('');
+    const {info,fetchInfo} = useContext(UserContext);
+    const {user,isLoading} = info;
+
     const handleRoleChange = (e, { value }) => setRole(value);
+
+    const handleSubmit = async()=>{
+        await updateUserInfo({role},user.uid);
+        fetchInfo();
+    }
+
     return (
         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', marginTop: '3vh', }}>
             <Segment style={{ padding: '20vh 40vw' }}>
@@ -32,7 +43,7 @@ const SelectRole = () => {
                     color="green"
                     style={{ marginTop: "4vh" }}
                     type="submit"
-                    onClick={() => {}}
+                    onClick={handleSubmit}
                 >
                     Next
                 </Button>
