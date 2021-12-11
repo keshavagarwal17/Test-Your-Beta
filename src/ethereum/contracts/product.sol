@@ -33,8 +33,10 @@ contract company{
 contract product{
     struct Review{
         string cid;
+        uint approval;
+        address from;
     }
-
+    mapping(address => bool) approval;
     string productTitle;
     string productDescription;
     string productLiveLink;
@@ -51,6 +53,11 @@ contract product{
     modifier NotZero(uint responses, uint money){
         require(responses != 0);
         require(money != 0);
+        _;
+    }
+
+    modifier notApproved(address approver) {
+        require(approval[approver] != true);
         _;
     }
     constructor(string memory title,string memory desc,string memory livelink,uint responses,uint money,uint ageMin, uint ageMax, string memory gender) NotZero(responses,money){
@@ -102,5 +109,21 @@ contract product{
     sex,
     reviews.length
         );
+    }
+
+    function addReview(string memory reviewId) public {
+        Review memory newReview = Review({
+             cid: reviewId,
+             approval: 0,
+             from: msg.sender
+        });
+        reviews.push(newReview);
+        reviewers.push(msg.sender);
+    }
+    
+    function approve(uint index) public notApproved(msg.sender) {
+        // approval[]
+        reviews[index].approval  = reviews[index].approval + 1;
+        approval[msg.sender] = true;
     }
 }

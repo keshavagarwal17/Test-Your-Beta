@@ -21,6 +21,8 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import { create } from "ipfs-http-client";
 import IPFS from "ipfs-mini";
 import product from "../../ethereum/product";
+import web3 from '../../ethereum/web3'
+import Review from './Review/Review'
 
 const IdeaPage = () => {
     const [client, setClient] = useState(null);
@@ -43,6 +45,16 @@ const IdeaPage = () => {
     const [editorState, setEditorState] = useState(() =>
     EditorState.createEmpty()
   );
+  const [currentAccount, setCurrentAccount] = useState("");
+
+  const setAccount = async () => {
+    const accounts = await web3.eth.getAccounts();
+    setCurrentAccount(accounts[0]);
+   }
+
+  useEffect(() => {
+    setAccount()
+  },[])
 
   const [review, setReview] = useState({
     bestpart: '',
@@ -62,6 +74,28 @@ const IdeaPage = () => {
     setIpfsInstance(ipfs);
   },[])
 
+  useEffect(() => {
+    try {
+      console.log(" this is called ", productSummary.reviewLength);
+      const reviews = [];
+      const reviewLengthArray = Array.from(
+        Array(productSummary.reviewLength).keys()
+      );
+      const productInstance = product(productAddress);
+      reviewLengthArray.map(async (i) => {
+        
+        const particularReview = await productInstance.methods.reviews(i).call();
+        reviews.push(particularReview);
+        console.log(particularReview);
+        // setALlReviews((allReviews) => [...allReviews, particularReview]);
+      });
+      setALlReviews(reviews)
+      console.log(allReviews)
+    } catch (err) {
+      console.log(err.message);
+    }
+  }, [productSummary]);
+
   const setProduct = async () => {
        // console.log(" this is user age ", age);
        setCurrentAddress(productAddress);
@@ -70,16 +104,17 @@ const IdeaPage = () => {
        const productInstance = product(productAddress);
        setProductInstance(productInstance);
        const productInfo = await productInstance.methods.getSummary().call();
-       // setProductSummary({
-       //   title: productInfo[0],
-       //   description: productInfo[1],
-       //   address: productInfo[2],
-       //   reviewLength: productInfo[3],
-       // });
        console.log(productInfo)
        const addressOfReviewers = await productInstance.methods.getAllReviewers().call();
        setAllReviewers(addressOfReviewers);
-       console.log(addressOfReviewers)
+       setProductSummary({
+        title: productInfo[0],
+        description: productInfo[1],
+        link: productInfo[2],
+        amt: productInfo[4],
+        reviewLength: productInfo[7],
+      });
+       console.log("this are address opf reviews", addressOfReviewers)
   }
 
   useEffect(() => {
@@ -118,6 +153,17 @@ const IdeaPage = () => {
     };
   };
 
+  const addReviewToNetwork = async (reviewId) => {
+    try {
+      await productInstance.methods.addReview(reviewId).send({
+        from: currentAccount
+      })
+      setProduct()
+    } catch(err) {
+      console.log(err.message)
+    }
+  }
+
   const addReview = async () => {
     setReview({
       ...review, bug: convertedContent
@@ -125,7 +171,9 @@ const IdeaPage = () => {
     const reviewId = await ipfsInstance.addJSON(review);
     console.log("cid", reviewId)
     console.log("final review", reviewId)
+    addReviewToNetwork(reviewId)
   }
+
 
   return (
     <>
@@ -133,20 +181,20 @@ const IdeaPage = () => {
       <Container style={{ marginTop: "20px" }}>
         <Segment>
           <b>Title: </b>
-          Title
+          {productSummary.title}
         </Segment>
         <Segment>
           <b>Description along with installation and usage: </b> <br />
           <div
             className="preview"
-            dangerouslySetInnerHTML={createMarkup("<h1> this will be description</h1>")}
+            dangerouslySetInnerHTML={createMarkup(productSummary.description)}
           ></div>
         </Segment>
         <Segment>
-          <b>Link to Product: </b> <br />
+          <b>Link to Product: </b>{productSummary.link} <br />
         </Segment>
         <Segment>
-          <b>Managed by:</b> fjhkfghsdgkjfhgfjgk
+          <b>Managed by:</b> this we need to work on
         </Segment>
         {/* <Header as="h1">All Reviews</Header> */}
         <Segment>
@@ -229,6 +277,20 @@ const IdeaPage = () => {
               </Button>
             </Modal.Actions>
           </Modal>
+        </Segment>
+        <Segment>
+        {allReviews.map((element, index) => {
+            return (
+              <Review
+                key={index}
+                data={element}
+                index={index}
+                // ideaAddress={ideaAddress}
+                allReviewers={allReviewers}
+                isAdmin={false}
+              />
+            );
+          })}
         </Segment>
       </Container>
     </>
