@@ -1,9 +1,11 @@
+/* eslint-disable react-hooks/rules-of-hooks */
+import React, { useState, useEffect } from "react"
 import "./App.css";
 import Header from "./Component/Shared/Header/Header";
 import UserProvider from "./providers/userProvider";
 import Home from "./Component/Home/Home";
 import Dashboard from "./Component/Dashboard/Dashboard";
-import React from "react";
+// import React from "react";
 import "semantic-ui-css/semantic.min.css";
 import Create from "./Component/Dashboard/Create/Create";
 import ProductDetail from './Component/ProductDetail/ProductDetail';
@@ -13,11 +15,17 @@ import UserForm from "./Component/PostSignUp/DetailForms/UserForm";
 import SelectRole from "./Component/PostSignUp/Roles/SelectRole";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
 // import Web3 from "./web3/web3";
+import CompanyInstance from './ethereum/company'
+import ProductInstance from './ethereum/product'
 import { newKitFromWeb3 } from "@celo/contractkit";
 import Web3 from 'web3';
 
 const connectCeloWallet = async () => {
-  let add = ''
+  // let add = ''
+  // const [kit, setKit] = useState(null);
+  // const [address, setAddress] = useState('')
+  // const [contract, setContract] = useState(null)
+
   if (window.celo) {
     console.log(" this is called ")
     try {
@@ -28,7 +36,9 @@ const connectCeloWallet = async () => {
       const accounts = await kit.web3.eth.getAccounts();
       console.log(accounts[0])
       const user_address = accounts[0];
-      add = accounts[0]
+      // setAddress(user_address)
+      // setKit(kit)
+      // add = accounts[0]
       console.log("this is uyser address", user_address);
 
       kit.defaultAccount = user_address;
@@ -39,9 +49,49 @@ const connectCeloWallet = async () => {
   } else {
     console.log("please install the extension");
   }
-  console.log("this is add", add)
+  // console.log("this is add", add)
 };
+
+// useEffect(() => {
+//   connectCeloWallet();
+// },[])
+
 const App = () => {
+  const [kit, setKit] = useState(null);
+  const [address, setAddress] = useState('')
+  const [contract, setContract] = useState(null)
+
+  const connectWithCelo = async () => {
+    if (window.celo) {
+      console.log(" this is called ")
+      try {
+        await window.celo.enable();
+        const web3 = new Web3(window.celo);
+        let kit = newKitFromWeb3(web3);
+  
+        const accounts = await kit.web3.eth.getAccounts();
+        console.log(accounts[0])
+        const user_address = accounts[0];
+        setAddress(user_address)
+        setKit(kit)
+        console.log("this is uyser address", user_address);
+  
+        kit.defaultAccount = user_address;
+      } catch (error) {
+        console.log("There is an error");
+        console.log({ error });
+      }
+    } else {
+      console.log("please install the extension");
+    }
+  }
+  
+  useEffect(() => {
+    connectWithCelo();
+    setContract(CompanyInstance)
+    console.log(address)
+  },[])
+
   return (
     <div>
       <UserProvider>
