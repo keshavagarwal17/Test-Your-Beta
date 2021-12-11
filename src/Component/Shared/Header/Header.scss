@@ -11,14 +11,21 @@
   color: $color;
   font-family: $family;
 }
-
+h1:first-child, h2:first-child, h3:first-child, h4:first-child, h5:first-child {
+  margin-top: 14px;
+}
 .head {
   @include display-config(space-between, center, row);
   border-bottom: 1px solid #9e9c9c;
-  padding: 10px 0 0 10px;
+  padding: 0px 0 0 10px;
+  margin: auto;
+  h3:first-child{
+    margin-top: 14px;
+  }
 
   &-content {
     display:flex;
+    align-items: center;
     // width: 30%;
 
     &-profile {
@@ -37,7 +44,7 @@
         color: black;
       }
       h1:hover{
-        color: rgb(107, 107, 223);
+        color: rgb(89, 89, 190);
       }
       @include font-config(15px, bold, rgb(161, 144, 144), "roboto");
     }

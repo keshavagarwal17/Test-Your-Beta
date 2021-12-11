@@ -10,17 +10,21 @@ import { Link } from "react-router-dom";
 const Header = () => {
   const history = useHistory();
   const location = useLocation();
-  const {info,fetchInfo} = useContext(UserContext);
+  const {info,fetchInfo,userId} = useContext(UserContext);
   const {user,isLoading} = info;
   const handleSignIn = async () => {
     await signInWithGoogle();
-    fetchInfo();
+    console.log("calling from header")
+    console.log(userId)
+    console.log(user)
+    await fetchInfo(2);
   };
 
   useEffect(()=>{
     if(!isLoading){
       let newPath = correctLocation(user);
       let curPath = location.pathname;
+      console.log("printing from header",newPath,user);
       if(curPath!==(newPath)){
         let len = curPath.length > 10 ? 10:curPath.length;
         if(newPath==="/dashboard" && curPath.substr(0,len)==="/dashboard"){
