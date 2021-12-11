@@ -6,17 +6,18 @@ import { UserContext } from "../../../providers/userProvider";
 import { useHistory, useLocation } from "react-router-dom";
 import { correctLocation } from "../../../services/routes";
 import { Link } from "react-router-dom";
+import { fetchInfo } from "../../../providers/userProvider";
 
 const Header = () => {
   const history = useHistory();
   const location = useLocation();
-  const { info, fetchInfo,userId } = useContext(UserContext);
+  const { info, userId } = useContext(UserContext);
   const { user, isLoading } = info;
   const handleSignIn = async () => {
     await signInWithGoogle();
-    console.log("calling from header")
-    console.log(userId)
-    console.log(user)
+    console.log("calling from header");
+    console.log(userId);
+    console.log(user);
     await fetchInfo(2);
   };
 
@@ -24,12 +25,15 @@ const Header = () => {
     if (!isLoading) {
       let newPath = correctLocation(user);
       let curPath = location.pathname;
-      console.log("printing from header",newPath,user);
-      if(curPath!==(newPath)){
-        let len = curPath.length > 10 ? 10:curPath.length;
-        if(newPath==="/dashboard" && curPath.substr(0,len)==="/dashboard"){
-          return
-        }else{
+      console.log("printing from header", newPath, user);
+      if (curPath !== newPath) {
+        let len = curPath.length > 10 ? 10 : curPath.length;
+        if (
+          newPath === "/dashboard" &&
+          curPath.substr(0, len) === "/dashboard"
+        ) {
+          return;
+        } else {
           history.push(newPath);
         }
       }
