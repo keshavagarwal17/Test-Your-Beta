@@ -1,5 +1,4 @@
-pragma solidity >=0.4.1 >=0.8.1;
-
+pragma solidity >=0.4.17;
 
 contract product{
     struct Review{

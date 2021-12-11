@@ -4,14 +4,13 @@ import { signInWithGoogle } from "../../../services/auth";
 // import { UserContext } from "../../../Provider/UserAddressProvider";
 import { connectCeloWallet } from "../../../App";
 const Header = () => {
-
   const handleSignIn = async () => {
     const tem = await signInWithGoogle();
   };
 
   return (
     <div className="head">
-      <img className="head-logo" src="/asset/images/logo.png" alt="logo" />
+      <img className="head-logo" src="images/logo.png" alt="logo" />
       <div className="head-content">
         <div className="head-content-profile">
           <h1 onClick={handleSignIn}>Login with google</h1>
