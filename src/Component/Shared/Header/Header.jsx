@@ -34,11 +34,12 @@ const Header = () => {
 
   return (
     <div className="head">
-      <img className="head-logo" src="images/logo.png" alt="logo" />
+      <h3>B-Test</h3>
+      {/* <img className="head-logo" src="images/logo.png" alt="logo" /> */}
       <div className="head-content">
-        <div className="head-content-profile">
+        {!user && <div className="head-content-profile">
           <h1 onClick={handleSignIn}>Login with google</h1>
-        </div>
+        </div>}
         <div className="head-content-profile">
          
          <Link to="/exploration">
@@ -53,9 +54,9 @@ const Header = () => {
           >
             Sign in with Celo Wallet</h1>
         </div>
-        <div className="head-content-profile">
+        {user && <div className="head-content-profile">
           <h1 onClick={signOutFromGoogle}>Logout</h1>
-        </div>
+        </div>}
       </div>
     </div>
   );

@@ -9,7 +9,7 @@ const IdeaCard = (props) => {
   return (
     <Card link>
       <img
-        src={"/asset/images/idea.png"}
+        src={"https://kullabs.com/uploads/Product-Review-Writing-Services.jpg"}
         style={{ height: "300px", width: "290px" }}
         alt="card"
       />
