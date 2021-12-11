@@ -26,18 +26,17 @@
 // initContract()
 // export default instance
 /* eslint-disable import/no-anonymous-default-export */
-import Company from './build/company.json'
-import Web3 from 'web3'
-const web3 = new Web3('https://alfajores-forno.celo-testnet.org')
+import Company from "./build/company.json";
+import Web3 from "web3";
+const web3 = new Web3("https://alfajores-forno.celo-testnet.org");
 // const Web3 = require('web3')
-const ContractKit = require('@celo/contractkit')
+const ContractKit = require("@celo/contractkit");
 // const web3 = new Web3('https://alfajores-forno.celo-testnet.org')
 export default () => {
-    const kit = ContractKit.newKitFromWeb3(web3)
-    return new kit.web3.eth.Contract(
-        JSON.parse(Company.interface),
-        '0x03ea0d3B75d2e6470CFd3B53224644384461A8b6'
-        // deployedNetwork && deployedNetwork.address
-
-    )
-}
+  const kit = ContractKit.newKitFromWeb3(web3);
+  return new kit.web3.eth.Contract(
+    JSON.parse(Company.interface),
+    "0xa23995e9A68469981c212f35C8A813Fa905d2d86"
+    // deployedNetwork && deployedNetwork.address
+  );
+};

@@ -1,6 +1,7 @@
 pragma solidity >=0.4.17;
 
 contract company{
+    product[] public deployedProducts;
     uint numberOfProducts;
     mapping(address=>product[]) allProducts;
 
@@ -13,6 +14,7 @@ contract company{
     function addAProduct(string memory title,string memory desc,string memory livelink,uint responses,uint money) public NotZero(responses,money){
         product newProduct = new product(title,desc,livelink,responses,money);
         allProducts[msg.sender].push(newProduct);
+        deployedProducts.push(newProduct);
     }
 }
 
