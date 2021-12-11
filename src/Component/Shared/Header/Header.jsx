@@ -19,8 +19,16 @@ const Header = () => {
           <h1>See Products</h1>
         </div>
         <div className="head-content-profile">
-          <h1>About</h1>
-        </div>
+         
+         <h1>
+           See Products
+          </h1>
+       </div>
+       <div className="head-content-profile">
+         <h1>
+           About
+          </h1>
+       </div>
         <div className="head-content-profile">
           <h1 onClick={connectCeloWallet}>Sign in with Celo Wallet</h1>
         </div>

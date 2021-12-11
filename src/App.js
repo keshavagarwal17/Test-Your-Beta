@@ -6,6 +6,7 @@ import Dashboard from "./Component/Dashboard/Dashboard";
 import React from "react";
 import "semantic-ui-css/semantic.min.css";
 import Create from "./Component/Dashboard/Create/Create";
+import ProductDetail from './Component/ProductDetail/ProductDetail';
 import ProductPage from "./Component/ProductPage/ProductPage";
 import CompanyForm from "./Component/PostSignUp/DetailForms/CompanyForm";
 import UserForm from "./Component/PostSignUp/DetailForms/UserForm";
@@ -42,6 +43,7 @@ const App = () => {
             <Route exact path="/" component={Home} />
             <Route exact path="/dashboard" component={Dashboard} />
             <Route exact path="/dashboard/create" component={Create} />
+            <Route exact path="/dashboard/detail/:id" component={ProductDetail} />
             <Route exact path="/company-form" component={CompanyForm} />
             <Route exact path="/user-form" component={UserForm} />
             <Route exact path="/select-role" component={SelectRole} />
