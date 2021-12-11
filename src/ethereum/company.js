@@ -32,11 +32,12 @@ const web3 = new Web3("https://alfajores-forno.celo-testnet.org");
 // const Web3 = require('web3')
 const ContractKit = require("@celo/contractkit");
 // const web3 = new Web3('https://alfajores-forno.celo-testnet.org')
-export default () => {
+
   const kit = ContractKit.newKitFromWeb3(web3);
-  return new kit.web3.eth.Contract(
-    JSON.parse(Company.interface),
-    "0xa23995e9A68469981c212f35C8A813Fa905d2d86"
+let instance = new kit.web3.eth.Contract(
+    JSON.parse(Company.metadata).output.abi,
+    "0xD25A8476918339908d9c5F631dD65D02564b0F51"
     // deployedNetwork && deployedNetwork.address
   );
-};
+
+  export default instance;
