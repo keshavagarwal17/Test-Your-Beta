@@ -81,7 +81,9 @@ const App = () => {
  const deployIt = async () => {
    console.log(CompanyInstance)
    try {
-    let temp = await CompanyInstance.methods.addAProduct("strring", "string", "sting",1,2).send({ from: '0x276A42eAc323740916De9829b1cA291c283b17fe' });
+    let temp = await CompanyInstance.methods.
+    addAProduct("strring", "string", "sting",1,2).
+    send({ from: '0x276A42eAc323740916De9829b1cA291c283b17fe' });
     console.log(temp)
 
    } catch(err) {

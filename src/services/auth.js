@@ -1,32 +1,30 @@
-import { getAuth, signInWithPopup, GoogleAuthProvider } from "firebase/auth";
-import { initializeApp } from "firebase/app";
-import dotenv from "dotenv";
-
-dotenv.config();
-const config = {
-  apiKey: process.env.REACT_APP_API_KEY,
-  authDomain: process.env.REACT_APP_AUTH_DOMAIN,
-  projectId: process.env.REACT_APP_PROJECT_ID,
-  storageBucket: process.env.REACT_APP_STORAGE_BUCKET,
-  messagingSenderId: process.env.REACT_APP_MESSAGING_SENDER_ID,
-  appId: process.env.REACT_APP_APP_ID,
-};
+import { getAuth, signInWithPopup, GoogleAuthProvider, signOut } from "firebase/auth";
+import {useContext} from 'react'
+import {app} from './firebase'
+import {
+  getFirestore,
+  getDoc,
+  setDoc,
+  doc,
+  updateDoc
+} from "firebase/firestore";
 const provider = new GoogleAuthProvider();
+const db = getFirestore(app);
 
-const app = initializeApp(config);
 export const auth = getAuth(app);
 export const signInWithGoogle = () => {
   return signInWithPopup(auth, provider)
     .then(async (result) => {
       const { user } = result;
+      const docRef = doc(db, "users", user.uid);
+      const docSnap = await getDoc(docRef);
+      if(!docSnap.exists()){
+        setDoc(doc(db, "users", user.uid), {
+          name:user.displayName,
+          email:user.email
+        })
+      }
       return user;
-      // const beHost = process.env.REACT_APP_BACKEND_HOST;
-      // const url = `${beHost}auth/register-with-google`;
-      // await axios.post(url, {
-      //   email: user.email,
-      //   name: user.displayName,
-      //   id: user.uid,
-      // });
     })
     .catch((error) => {
       // Handle Errors here.
@@ -38,3 +36,19 @@ export const signInWithGoogle = () => {
       // const credential = GoogleAuthProvider.credentialFromError(error);
     });
 };
+
+export const updateUserInfo = (data,id)=>{
+  const userRef = doc(db, "users", id);
+
+  // Set the "capital" field of the city 'DC'
+  return updateDoc(userRef, data);
+}
+
+export const signOutFromGoogle = ()=>{
+  
+  signOut(auth).then(() => {
+    console.log("Sign-out successful")
+  }).catch((error) => {
+    // An error happened.
+  });
+}

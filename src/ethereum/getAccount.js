@@ -3,7 +3,6 @@ const fs = require('fs')
 const path = require('path')
 var web3 = new Web3()
 
-
 const filePath = path.join(__dirname, './.secret')
 
 function getAccount() {

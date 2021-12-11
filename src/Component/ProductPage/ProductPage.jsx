@@ -18,12 +18,45 @@ import { EditorState } from "draft-js";
 import { convertToHTML } from "draft-convert";
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import { create } from "ipfs-http-client";
+import IPFS from "ipfs-mini";
+
+
 
 const IdeaPage = () => {
+    const [client, setClient] = useState(null);
     const [open, setOpen] = useState(false)
+    const [ipfsInstance, setIpfsInstance] = useState(null);
     const [editorState, setEditorState] = useState(() =>
     EditorState.createEmpty()
   );
+  const [review, setReview] = useState({
+    bestpart: '',
+    improvement: '',
+    stuck: '',
+    rating: 0,
+    recommend: '',
+    bug: ''
+  })
+
+  useEffect(() => {
+    const ipfs = new IPFS({
+      host: "ipfs.infura.io",
+      port: 5001,
+      protocol: "https"
+    });
+    setIpfsInstance(ipfs);
+  },[])
+
+  const setReviewValues = (e) => {
+    setReview({ ...review, [e.target.name]: e.target.value });
+    console.log("setting review", review)
+  };
+
+    const setDropdownValues = (e, data) => {
+    setReview({ ...review, [data.name]: data.value });
+  };
+
 
   const [convertedContent, setConvertedContent] = useState(null);
 
@@ -46,6 +79,15 @@ const IdeaPage = () => {
       __html: DOMPurify.sanitize(html),
     };
   };
+
+  const addReview = async () => {
+    setReview({
+      ...review, bug: convertedContent
+    })
+    const reviewId = await ipfsInstance.addJSON(review);
+    console.log("cid", reviewId)
+    console.log("final review", reviewId)
+  }
 
   return (
     <>
@@ -90,7 +132,7 @@ const IdeaPage = () => {
                     name="bestpart"
                     type="text"
                     onChange={(e) =>
-                        console.log(e)
+                      setReviewValues(e)
                     }
                   />
                   <label> What can be improved further </label>
@@ -98,7 +140,7 @@ const IdeaPage = () => {
                     name="improvement"
                     type="text"
                     onChange={(e) =>
-                        console.log(e)
+                      setReviewValues(e)
                     }
                   />
                   
@@ -106,9 +148,7 @@ const IdeaPage = () => {
                   <textarea
                     name="stuck"
                     type="text"
-                    onChange={(e) =>
-                        console.log(e)
-                    }
+                    onChange={(e) => setReviewValues(e)}
                   />
                   
                   <label> How much you will rate on rating on 10 </label>
@@ -116,18 +156,18 @@ const IdeaPage = () => {
                     name="rating"
                     type="number"
                     onChange={(e) =>
-                        console.log(e)
+                      setReviewValues(e)
                     }
                   />
                   
                   <label> Would you recommend this to your friend </label>
                   <Dropdown
-                placeholder="select your gender"
-                name="gender"
+                placeholder="select"
+                name="recommend"
                 fluid
-                search
                 selection
-                // onChange={(e, data) => setDropdownValues(e, data)}
+                clearable
+                onChange={(e, data) => setDropdownValues(e, data)}
                 options={boolOptions}
               />
                   
@@ -145,6 +185,7 @@ const IdeaPage = () => {
             <Modal.Actions>
               <Button
                 color="green"
+                onClick={() => addReview()}
               >
                 <Icon name="add" /> Add Review
               </Button>

@@ -1,10 +1,14 @@
 import React from 'react'
-import { Button, Form, Segment, Container } from "semantic-ui-react";
-import { useState } from "react";
+import { Button, Form, Segment,Container, Select } from "semantic-ui-react";
+import { useState,useContext } from "react";
+import {UserContext} from '../../../providers/userProvider'
+import {updateUserInfo} from '../../../services/auth'
 
 const UserForm = () => {
     const [data, setData] = useState({});
-    const gender = [
+    const {info,fetchInfo} = useContext(UserContext);
+    const {user,isLoading} = info;
+    const genderOptions = [
         { key: 'm', text: 'Male', value: 'male' },
         { key: 'f', text: 'Female', value: 'female' },
         { key: 'o', text: 'Other', value: 'other' },
@@ -12,26 +16,32 @@ const UserForm = () => {
     const labelStyle = { fontSize: "15px" };
     const formElement = [
         {
-            label: "Interested Categories of applications",
+            label: "Name",
             placeholder: "Write categories of applications e.g. Banking, Food-Ordering, Trivia, Gaming etc.",
-            name: "companyName",
+            name: "userName",
             type: "text",
             isTextArea: false,
         },
         {
-            label: "Age",
-            placeholder:
-              "Enter your age",
-            name: "age",
-            type: "number",
+            label: "dob",
+            placeholder: "Enter your Dob",
+            name: "dob",
+            type: "date",
             isTextArea: false,
-          },
+        },
     ]
+
+    const handleSubmit = async()=>{
+      await updateUserInfo(data,user.uid);
+      fetchInfo();
+    }
+
     const setInfo = (e) => {
         setData({
           ...data,
           [e.target.name]: e.target.value,
         });
+        console.log(data);
       };
     const renderFormElements = () => {
         return formElement.map((ele, index) => (
@@ -67,17 +77,23 @@ const UserForm = () => {
                 <h2 style={{ marginBottom: '5vh' }}>User Details</h2>
                 <Form>
                     {renderFormElements()}
-                    <Form.Select
-                        fluid
-                        label='Gender'
-                        options={gender}
-                        placeholder='Gender'
+                    <Form.Field
+                      control={Select}
+                      label='Gender'
+                      options={genderOptions}
+                      placeholder='Select your Gender'
+                      onChange={(e, { value }) => {
+                        setData({
+                          ...data,
+                          gender: value
+                        })
+                      }}
                     />
                     <Button
                     color="green"
                     style={{ marginTop: "2%" }}
                     type="submit"
-                    onClick={() => {}}
+                    onClick={() => handleSubmit()}
                     >
                     Submit
                     </Button>

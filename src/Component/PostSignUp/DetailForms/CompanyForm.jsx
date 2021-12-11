@@ -1,10 +1,14 @@
 import React from 'react'
-import { Button, Form, Segment , Container } from "semantic-ui-react";
-import { useState } from "react";
+import { Button, Form, Segment,Container } from "semantic-ui-react";
+import { useState, useContext } from "react";
+import {UserContext} from '../../../providers/userProvider'
+import {updateUserInfo} from '../../../services/auth'
 
 
 const CompanyForm = () => {
     const [data, setData] = useState({});
+    const {info,fetchInfo} = useContext(UserContext);
+    const {user,isLoading} = info;
     const labelStyle = { fontSize: "15px" };
     const formElement = [
         {
@@ -22,6 +26,10 @@ const CompanyForm = () => {
             isTextArea: true,
         },
     ]
+    const handleSubmit = async()=>{
+      await updateUserInfo(data,user.uid);
+      fetchInfo();
+    }
     const setInfo = (e) => {
         setData({
           ...data,
@@ -66,7 +74,7 @@ const CompanyForm = () => {
                     color="green"
                     style={{ marginTop: "2%" }}
                     type="submit"
-                    onClick={() => {}}
+                    onClick={handleSubmit}
                     >
                     Submit
                     </Button>
