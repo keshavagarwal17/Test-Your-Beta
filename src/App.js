@@ -12,17 +12,24 @@ import CompanyForm from "./Component/PostSignUp/DetailForms/CompanyForm";
 import UserForm from "./Component/PostSignUp/DetailForms/UserForm";
 import SelectRole from "./Component/PostSignUp/Roles/SelectRole";
 import { BrowserRouter as Router, Switch, Route } from "react-router-dom";
-import Web3 from "./web3/web3";
+// import Web3 from "./web3/web3";
 import { newKitFromWeb3 } from "@celo/contractkit";
+import Web3 from 'web3';
+
 const connectCeloWallet = async () => {
+  let add = ''
   if (window.celo) {
+    console.log(" this is called ")
     try {
       await window.celo.enable();
       const web3 = new Web3(window.celo);
       let kit = newKitFromWeb3(web3);
 
       const accounts = await kit.web3.eth.getAccounts();
+      console.log(accounts[0])
       const user_address = accounts[0];
+      add = accounts[0]
+      console.log("this is uyser address", user_address);
 
       kit.defaultAccount = user_address;
     } catch (error) {
@@ -32,6 +39,7 @@ const connectCeloWallet = async () => {
   } else {
     console.log("please install the extension");
   }
+  console.log("this is add", add)
 };
 const App = () => {
   return (
