@@ -2,7 +2,7 @@ import React, { useContext } from "react";
 import "./Header.scss";
 import { signInWithGoogle } from "../../../services/auth";
 // import { UserContext } from "../../../Provider/UserAddressProvider";
-import { connectCeloWallet } from "../../../App";
+// import { connectCeloWallet } from "../../../App";
 const Header = () => {
   const handleSignIn = async () => {
     const tem = await signInWithGoogle();
@@ -31,7 +31,7 @@ const Header = () => {
        </div>
         <div className="head-content-profile">
           <h1 
-          onClick={connectCeloWallet}
+          // onClick={connectCeloWallet}
           >
             Sign in with Celo Wallet</h1>
         </div>
