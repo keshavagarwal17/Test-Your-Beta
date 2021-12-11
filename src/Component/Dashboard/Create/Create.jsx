@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
   Container,
   Segment,
@@ -14,10 +14,55 @@ import { convertToHTML } from "draft-convert";
 import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import "./Create.scss";
+import instance from '../../../ethereum/company'
 import { useHistory } from "react-router";
 import toast, { Toaster } from "react-hot-toast";
+// const Web3 = require("web3")
+// const ContractKit = require('@celo/contractkit')
+
+// 2. Import the getAccount function
+// const getAccount = require('./getAccount').getAccount
+
+// 3. Init a new kit, connected to the alfajores testnet
+// const web3 = new Web3('https://alfajores-forno.celo-testnet.org')
+// const kit = ContractKit.newKitFromWeb3(web3)
 
 const Create = () => {
+
+
+
+  const saveToCelo = async () => {
+    // let account = await getAccount()
+
+    // Add your account to ContractKit to sign transactions
+    // This account must have a CELO balance to pay tx fees, get some at https://celo.org/build/faucet
+    try {
+      // kit.connection.addAccount('f8f15a4dfdde36f59ad832f958dededc4ece6d406bbc04c98747d564b7cf64a7')
+      // const txObject = await instance.methods.addAProduct("fdfd","fdfd","fdfd",1,2)
+      // let tx = await kit.sendTransactionObject(txObject, { from: '0x276A42eAc323740916De9829b1cA291c283b17fe' })
+  
+      // let receipt = await tx.waitReceipt()
+      // console.log("receipt received",receipt)
+    } catch(err) {
+      console.log(err.message)
+    }
+
+  }
+  useEffect(()=> {
+    console.log(instance)
+  saveToCelo()
+
+  },[])
+  // let account = await getAccount()
+
+  // // Add your account to ContractKit to sign transactions
+  // // This account must have a CELO balance to pay tx fees, get some at https://celo.org/build/faucet
+  // kit.connection.addAccount(account.privateKey)
+  // const txObject = await instance.methods.setName(newName)
+  // let tx = await kit.sendTransactionObject(txObject, { from: account.address })
+
+  // let receipt = await tx.waitReceipt()
+  // console.log(receipt)
 
    const genderOptions = [
        { key: "male", text: "male" },
@@ -137,6 +182,7 @@ const Create = () => {
             primary
             content="deploy"
             icon="save"
+            onClick={() => saveToCelo()}
             style={{ marginTop: "20px" }}
           />
           <Button
