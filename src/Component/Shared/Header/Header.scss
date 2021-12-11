@@ -15,16 +15,11 @@
 .head {
   @include display-config(space-between, center, row);
   border-bottom: 1px solid #9e9c9c;
-
-  &-logo {
-    width: 100px !important;
-    height: 45px;
-    margin-left: 1.2%;
-  }
+  padding: 10px 0 0 10px;
 
   &-content {
-    @include display-config(space-around, center, row);
-    width: 30%;
+    display:flex;
+    // width: 30%;
 
     &-profile {
       img {
@@ -38,16 +33,18 @@
         padding-right: 13px;
         margin: auto;
         text-align: center;
-        color: rgb(80, 80, 233);
         cursor: pointer;
+        color: black;
       }
-      @include display-config(space-around, center, row);
+      h1:hover{
+        color: rgb(107, 107, 223);
+      }
       @include font-config(15px, bold, rgb(161, 144, 144), "roboto");
     }
 
     &-action {
       @include display-config(space-around, center, row);
-      width: 60%;
+      width: 70%;
     }
   }
 }

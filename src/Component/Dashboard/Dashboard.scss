@@ -12,29 +12,29 @@
     font-family: $family;
   }
   
-  .head {
-    @include display-config(space-between, center, row);
+  // .head {
+  //   @include display-config(space-between, center, row);
   
-    &-logo {
-      width: 300px;
-    }
+  //   &-logo {
+  //     width: 300px;
+  //   }
   
-    &-content {
-      @include display-config(space-around, center, row);
-      width: 50%;
+  //   &-content {
+  //     @include display-config(space-around, center, row);
+  //     width: 50%;
   
-      &-profile {
-        @include display-config(space-around, center, row);
-        @include font-config(15px, bold, black, "roboto");
-        width: 40%;
-      }
+  //     &-profile {
+  //       @include display-config(space-around, center, row);
+  //       @include font-config(15px, bold, black, "roboto");
+  //       width: 40%;
+  //     }
   
-      &-action {
-        @include display-config(space-around, center, row);
-        width: 60%;
-      }
-    }
-  }
+  //     &-action {
+  //       @include display-config(space-around, center, row);
+  //       width: 60%;
+  //     }
+  //   }
+  // }
   
   .body-area {
     @include display-config(center, normal, row);
