@@ -1,12 +1,12 @@
 import React from 'react'
 import { Button, Form, Segment,Container, Select } from "semantic-ui-react";
 import { useState,useContext } from "react";
-import {UserContext} from '../../../providers/userProvider'
+import {UserContext,fetchInfo} from '../../../providers/userProvider'
 import {updateUserInfo} from '../../../services/auth'
 
 const UserForm = () => {
     const [data, setData] = useState({});
-    const {info,fetchInfo} = useContext(UserContext);
+    const {info} = useContext(UserContext);
     const {user,isLoading} = info;
     const genderOptions = [
         { key: 'm', text: 'Male', value: 'male' },
@@ -18,9 +18,9 @@ const UserForm = () => {
         {
             label: "Name",
             placeholder: "Write categories of applications e.g. Banking, Food-Ordering, Trivia, Gaming etc.",
-            name: "userName",
+            name: "name",
             type: "text",
-            isTextArea: false,
+            isTextArea: false
         },
         {
             label: "dob",

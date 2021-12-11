@@ -17,11 +17,7 @@ h1:first-child, h2:first-child, h3:first-child, h4:first-child, h5:first-child {
 .head {
   @include display-config(space-between, center, row);
   border-bottom: 1px solid #9e9c9c;
-  padding: 0px 0 0 10px;
-  margin: auto;
-  h3:first-child{
-    margin-top: 14px;
-  }
+  padding: 10px 5px;
 
   &-content {
     display:flex;

@@ -1,12 +1,12 @@
 import React, { useContext, useEffect } from "react";
 import { Redirect } from "react-router-dom";
-import { UserContext } from "../../../providers/userProvider";
+import { UserContext,fetchInfo } from "../../../providers/userProvider";
 import { updateUserInfo } from "../../../services/auth";
 import { Segment, Card, Button, Form } from "semantic-ui-react";
 
 const SelectRole = () => {
   const [role, setRole] = React.useState("");
-  const { info, fetchInfo } = useContext(UserContext);
+  const { info } = useContext(UserContext);
   const { user, isLoading } = info;
   const [redirect, setRedirect] = React.useState(null);
 
