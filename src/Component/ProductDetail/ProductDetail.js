@@ -42,6 +42,7 @@ const ProductPage = () => {
       descp: '',
       amt: '',
       reviewLength: '',
+      manager: ''
     });
     const [editorState, setEditorState] = useState(() =>
     EditorState.createEmpty()
@@ -115,6 +116,7 @@ const ProductPage = () => {
         link: productInfo[2],
         amt: productInfo[4],
         reviewLength: productInfo[7],
+        manager: productInfo[9]
       });
        console.log("this are address opf reviews", addressOfReviewers)
        setReviewLen(addressOfReviewers.length)
@@ -156,38 +158,6 @@ const ProductPage = () => {
     };
   };
 
-  const addReviewToNetwork = async (reviewId) => {
-    try {
-      setLoading(true);
-      await productInstance.methods.addReview(reviewId).send({
-        from: currentAccount
-      })
-      setLoading(false)
-      toast.success("Review added successfully")
-    } catch(err) {
-      console.log(err.message)
-      toast.error("Something bad happend !!")
-    }
-  }
-
-  const addReview = async () => {
-    setReview({
-      ...review, bug: convertedContent
-    })
-    const obj = {
-      bestpart: review.bestpart,
-      improvement: review.improvement,
-      stuck: review.stuck,
-      rating: review.rating,
-      recommend: review.recommend,
-      bug: convertedContent
-    }
-    const reviewId = await ipfsInstance.addJSON(obj);
-    console.log("cid", reviewId)
-    console.log("final review", reviewId)
-    addReviewToNetwork(reviewId)
-  }
-
 
   return (
     <>
@@ -208,7 +178,7 @@ const ProductPage = () => {
           <b>Link to Product: </b>{productSummary.link} <br />
         </Segment>
         <Segment>
-          <b>Managed by:</b> this we need to work on
+          <b>Managed by:</b> {productSummary.manager}
         </Segment>
         <Header as="h1">All Reviews</Header>
         <Segment>

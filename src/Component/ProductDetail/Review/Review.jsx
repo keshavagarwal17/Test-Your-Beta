@@ -158,6 +158,7 @@ const setAccount = async () => {
             dangerouslySetInnerHTML={createMarkup(review.bug)}
           ></div>
           </Segment>
+          <p> <Icon name="user" /> Approval:{props.data.approval}</p>
         </Card.Content>
         <Card.Content extra>
           {/* <Modal

@@ -56,9 +56,7 @@ const setAccount = async () => {
 
   const approveReview = async (reviewIndex) => {
     try {
-      if (props.allReviewers.includes(currentAccount)) {
-        toast("You already approved it !!");
-      } else {
+ 
         setLoading(true);
         await productInstance.methods
           .approve(reviewIndex)
@@ -67,7 +65,6 @@ const setAccount = async () => {
         setLoading(false);
         setOpen(false);
         window.location.reload();
-      }
     } catch (err) {
       console.log(err.message);
       toast.error("falied to approve review (you must hav already reviewed)!!");

@@ -42,6 +42,7 @@ const ProductPage = () => {
       descp: '',
       amt: '',
       reviewLength: '',
+      manager: ''
     });
     const [editorState, setEditorState] = useState(() =>
     EditorState.createEmpty()
@@ -115,6 +116,7 @@ const ProductPage = () => {
         link: productInfo[2],
         amt: productInfo[4],
         reviewLength: productInfo[7],
+        manager: productInfo[9]
       });
        console.log("this are address opf reviews", addressOfReviewers)
        setReviewLen(addressOfReviewers.length)
@@ -208,7 +210,7 @@ const ProductPage = () => {
           <b>Link to Product: </b>{productSummary.link} <br />
         </Segment>
         <Segment>
-          <b>Managed by:</b> this we need to work on
+          <b>Managed by:</b> {productSummary.manager}
         </Segment>
         {/* <Header as="h1">All Reviews</Header> */}
         <Segment>
