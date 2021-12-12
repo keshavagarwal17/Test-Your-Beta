@@ -117,8 +117,8 @@ const ProductPage = () => {
         title: productInfo[0],
         description: productInfo[1],
         link: productInfo[2],
-        amt: productInfo[4],
-        reviewLength: productInfo[7],
+        amt: productInfo[7],
+        reviewLength: productInfo[8],
         manager: productInfo[9]
       });
       const balance = await productInstance.methods.currentBalance().call()
