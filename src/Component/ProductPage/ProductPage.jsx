@@ -24,7 +24,7 @@ import product from "../../ethereum/product";
 import web3 from '../../ethereum/web3'
 import Review from './Review/Review'
 
-const IdeaPage = () => {
+const ProductPage = () => {
     const [client, setClient] = useState(null);
     const [open, setOpen] = useState(false)
     const [ipfsInstance, setIpfsInstance] = useState(null);
@@ -42,6 +42,7 @@ const IdeaPage = () => {
       descp: '',
       amt: '',
       reviewLength: '',
+      manager: ''
     });
     const [editorState, setEditorState] = useState(() =>
     EditorState.createEmpty()
@@ -115,6 +116,7 @@ const IdeaPage = () => {
         link: productInfo[2],
         amt: productInfo[4],
         reviewLength: productInfo[7],
+        manager: productInfo[9]
       });
        console.log("this are address opf reviews", addressOfReviewers)
        setReviewLen(addressOfReviewers.length)
@@ -208,7 +210,7 @@ const IdeaPage = () => {
           <b>Link to Product: </b>{productSummary.link} <br />
         </Segment>
         <Segment>
-          <b>Managed by:</b> this we need to work on
+          <b>Managed by:</b> {productSummary.manager}
         </Segment>
         {/* <Header as="h1">All Reviews</Header> */}
         <Segment>
@@ -313,4 +315,4 @@ const IdeaPage = () => {
   );
 };
 
-export default IdeaPage;
+export default ProductPage;

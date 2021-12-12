@@ -36,8 +36,8 @@ const Dashboard = () => {
     setMyProducts(data);
   };
   useEffect(() => {
-    // fetchMyProduct()
-    fetchData();
+    fetchMyProduct()
+    // fetchData();
   }, []);
 
   return (

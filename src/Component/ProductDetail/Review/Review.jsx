@@ -7,6 +7,7 @@ import {
   Input,
   Button,
   Form,
+  Label,
   Header,
   Segment,
 } from "semantic-ui-react";
@@ -20,9 +21,9 @@ import DOMPurify from "dompurify";
 
 const Review = (props) => {
   const [productInstance, setProductInstance] = useState();
-  const [loading, setLoading] = useState(false);
+  const [loadingRating, setLoading] = useState(false);
   const [transactionLoading, setTransactionLoading] = useState(false);
-  const [open, setOpen] = useState(false);
+  const [openRating, setOpenRating] = useState(false);
   const [ipfsInstance, setIpfsInstance] = useState(null);
   const [addMoney, setAddMoney] = useState({ amt: "" });
   const [currentAccount, setCurrentAccount] = useState('')
@@ -34,6 +35,7 @@ const Review = (props) => {
     recommend: '',
     bug: ''
   })
+  const [rating, setRating] = useState(0)
 //   const info = useContext(UserContext);
 //   const { userAddress } = info;
   console.log(props);
@@ -54,22 +56,25 @@ const setAccount = async () => {
     // }
   }, []);
 
-  const approveReview = async (reviewIndex) => {
-    try {
- 
-        setLoading(true);
-        await productInstance.methods
-          .approve(reviewIndex)
-          .send({ from: currentAccount });
-        toast.success("Review approved successfully");
-        setLoading(false);
-        setOpen(false);
-        window.location.reload();
-    } catch (err) {
-      console.log(err.message);
-      toast.error("falied to approve review (you must hav already reviewed)!!");
-    }
-  };
+//   const approveReview = async (reviewIndex) => {
+//     try {
+//       if (props.allReviewers.includes(currentAccount)) {
+//         toast("You already approved it !!");
+//       } else {
+//         setLoading(true);
+//         await productInstance.methods
+//           .approve(reviewIndex)
+//           .send({ from: currentAccount });
+//         toast.success("Review approved successfully");
+//         setLoading(false);
+//         setOpen(false);
+//         window.location.reload();
+//       }
+//     } catch (err) {
+//       console.log(err.message);
+//       toast.error("falied to approve review (you must hav already reviewed)!!");
+//     }
+//   };
 
   useEffect(() => {
     const ipfs = new IPFS({
@@ -81,7 +86,7 @@ const setAccount = async () => {
   },[])
 
   const setReviewData = () => {
-      console.log(props.data + "and" + props.data.cid)
+      console.log(props.data)
       if(ipfsInstance) {
       ipfsInstance.catJSON(props.data.cid).then((data, err) => {
           setReview({
@@ -94,6 +99,21 @@ const setAccount = async () => {
           })
           console.log(data)
       })
+      }
+  }
+
+  const rateIt = async (reviewIndex) => {
+      try {
+          setLoading(true)
+      console.log("rating the review")
+      await productInstance.methods.rateReview(reviewIndex, rating).send({
+          from :currentAccount
+      }) 
+      setLoading(false)
+      toast.success("Review Rated");
+      } catch(err) {
+          console.log(err.message)
+      toast.success("Something bad happened !!");
       }
   }
 
@@ -113,6 +133,9 @@ const setAccount = async () => {
       <Card fluid>
         <Card.Content header={"Reviewer: " + props.data.from} />
         <Card.Content>
+            {props.data.rating !== '11' ? <Label as='a' color='teal' ribbon='right'>
+            Review Rating: {props.data.rating}
+            </Label> : null }
           <Segment>
           <h3> Best part of our product which you like </h3>
             <p>{review.bestpart}</p>
@@ -135,9 +158,10 @@ const setAccount = async () => {
             dangerouslySetInnerHTML={createMarkup(review.bug)}
           ></div>
           </Segment>
+          <p> <Icon name="user" /> Approval:{props.data.approval}</p>
         </Card.Content>
         <Card.Content extra>
-          <Modal
+          {/* <Modal
             closeIcon
             open={open}
             trigger={
@@ -168,7 +192,41 @@ const setAccount = async () => {
                 </Button>
               </>
             </Modal.Actions>
-          </Modal>
+          </Modal> */}
+
+          {props.data.rating === '11' &&           
+          <Modal
+            closeIcon
+            open={openRating}
+            trigger={
+              <Button color="green" floated="right" loading={loadingRating}>
+                <Icon name="star" />
+                Rate this review
+              </Button>
+            }
+            onClose={() => setOpenRating(false)}
+            onOpen={() => setOpenRating(true)}
+          >
+            <Header as="h2" content="Rate it !!" />
+            <Modal.Content>
+                <Form>
+                <Form.Field>
+                    <input type="number" placeholder="rate this review" name ="rating" onChange={(e) => setRating(e.target.value)} required />
+                </Form.Field>
+                </Form>
+            </Modal.Content>
+            <Modal.Actions>
+              <>
+                <Button
+                  color="green"
+                  onClick={() => rateIt(props.index)}
+                  loading={loadingRating}
+                >
+                  Yes !!
+                </Button>
+              </>
+            </Modal.Actions>
+          </Modal> }
         </Card.Content>
       </Card>
     </>

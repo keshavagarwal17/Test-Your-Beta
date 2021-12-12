@@ -41,14 +41,14 @@ const Create = () => {
       const setDropdownValues = (e, data) => {
       setProduct({ ...product, [data.name]: data.value });
     };
-
+ 
   const deployProduct = async () => {
     try {
       console.log(product)
         setLoading(true);
       const accounts = await web3.eth.getAccounts();
       console.log(accounts[0], company.methods)
-       await company.methods
+      let data = await company.methods
         .addAProduct(
           product.title,
           (convertedContent) ? convertedContent : "no description",
@@ -61,8 +61,8 @@ const Create = () => {
         )
         .send({
           from: '0xE7186aE499D32D848fd0544ED199dd731e832523',
-          // type: "0x2",
         });
+        console.log("this is return data", data)
       toast.success("Success fully deployed product !!");
       setLoading(false);
       // }
@@ -181,7 +181,7 @@ const Create = () => {
                 id="form-input-control-last-name"
                 control={Input}
                 name="amount"
-                label="amount to disburse"
+                label="amount to disburse (Enter in micro ether)"
                 onChange={(e) => setProductValues(e)}
                 placeholder="Enter amount to disburse"
                 type="number"

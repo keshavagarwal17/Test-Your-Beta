@@ -4,6 +4,7 @@ contract company{
     product[] public deployedProducts;
     uint numberOfProducts;
     mapping(address=>product[]) allProducts;
+    // mapping(product=>uint) public productBalance;
 
       modifier NotZero(uint responses, uint money){
         require(responses != 0);
@@ -12,9 +13,10 @@ contract company{
     }
 
     function addAProduct(string memory title,string memory desc,string memory livelink,uint responses,uint money, uint ageMin, uint ageMax, string memory gender) public NotZero(responses,money){
-        product newProduct = new product(title,desc,livelink,responses,money, ageMin, ageMax, gender);
+        product newProduct = new product(title,desc,livelink,responses,money, ageMin, ageMax, gender, msg.sender);
         allProducts[msg.sender].push(newProduct);
         deployedProducts.push(newProduct);
+        // productBalance[product] = msg.value;
         numberOfProducts++;
     }
 
@@ -32,6 +34,7 @@ contract product{
         string cid;
         uint approval;
         address from;
+        uint rating;
     }
     mapping(address => bool) approval;
     string productTitle;
@@ -42,10 +45,12 @@ contract product{
     uint minAge;
     uint maxAge;
     string sex;
+    address manager;
     Review[] public reviews;
     mapping(address=>uint) Ratings;
     address[] public reviewers;
     mapping(address=>Review) reviewByUser;
+    uint public productBalance;
 
 
     modifier NotZero(uint responses, uint money){
@@ -58,7 +63,7 @@ contract product{
         require(approval[approver] != true);
         _;
     }
-    constructor(string memory title,string memory desc,string memory livelink,uint responses,uint money,uint ageMin, uint ageMax, string memory gender) NotZero(responses,money){
+    constructor(string memory title,string memory desc,string memory livelink,uint responses,uint money,uint ageMin, uint ageMax, string memory gender, address from) NotZero(responses,money)  {
         productTitle = title;
         productDescription = desc;
         totalMoney = money;
@@ -67,6 +72,11 @@ contract product{
         minAge = ageMin;
         maxAge = ageMax;
         sex = gender;
+        manager = from;
+    }
+
+    function addBalance() public payable {
+        totalMoney = msg.value;
     }
 
     function sendMoney(address receiver, uint amount) public{
@@ -75,7 +85,7 @@ contract product{
     }
 
 
-    function payToAllReviewers(){
+    function payToAllReviewers() public {
       uint currentMoney = (amountOfResponses/reviewers.length)*totalMoney;
       uint totalRating=0;
       uint i;
@@ -117,7 +127,8 @@ contract product{
             uint,
             uint,
             string memory,
-            uint
+            uint,
+            address
         )
     {
         return (
@@ -129,7 +140,8 @@ contract product{
     minAge,
     maxAge,
     sex,
-    reviews.length
+    reviews.length,
+    manager
         );
     }
 
@@ -137,10 +149,15 @@ contract product{
         Review memory newReview = Review({
              cid: reviewId,
              approval: 0,
-             from: msg.sender
+             from: msg.sender,
+             rating: 11
         });
         reviews.push(newReview);
         reviewers.push(msg.sender);
+    }
+
+    function rateReview(uint reviewIndex, uint rating) public {
+        reviews[reviewIndex].rating = rating;
     }
     
     function approve(uint index) public notApproved(msg.sender) {
