@@ -133,7 +133,7 @@ const Review = (props) => {
           setRewardLoader(true)
           console.log(rewardAmt + "and" + reviewIndex)
         await productInstance.methods.rewardReviewer(
-            parseInt(rewardAmt),
+            rewardAmt,
             reviewIndex,
         ).send({
             from: currentAccount,
@@ -193,7 +193,7 @@ const Review = (props) => {
               className="reward-review-inp"
               controle={Input}
               placeholder="Reward reviewer"
-              onClick={(e) => setRewardAmt(e.target.value)}
+              onChange={(e) => setRewardAmt(e.target.value)}
             />
             <Button
               loading={rewardLoader}
