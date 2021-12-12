@@ -50,15 +50,6 @@ const Create = () => {
   };
 
   const setDropdownValues = (e, data) => {
-    setProduct({ ...product, [data.name]: data.value });
-  };
-
-  const setProductValues = (e) => {
-    setProduct({ ...product, [e.target.name]: e.target.value });
-    console.log("setting review", product);
-  };
-
-  const setDropdownValues = (e, data) => {
     console.log(data.name, data.value);
     setProduct({ ...product, [data.name]: data.value });
   };
