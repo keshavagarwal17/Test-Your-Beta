@@ -17,7 +17,7 @@ const UserForm = () => {
     const formElement = [
         {
             label: "Name",
-            placeholder: "Write categories of applications e.g. Banking, Food-Ordering, Trivia, Gaming etc.",
+            placeholder: "Enter your name",
             name: "name",
             type: "text",
             isTextArea: false
