@@ -41,7 +41,6 @@ const UserForm = () => {
           ...data,
           [e.target.name]: e.target.value,
         });
-        console.log(data);
       };
     const renderFormElements = () => {
         return formElement.map((ele, index) => (

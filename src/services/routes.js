@@ -15,7 +15,7 @@ export const correctLocation = (user)=>{
         if(!user.dob){
             return "/user-form"
         }else{
-            return "/dashboard"
+            return "/user/exploration"
         }
     }
 }
