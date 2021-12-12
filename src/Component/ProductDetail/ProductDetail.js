@@ -3,6 +3,7 @@ import "./ProductDetail.scss";
 import { useParams } from "react-router-dom";
 import {
   Container,
+  Card,
   Segment,
   Header,
   Button,
@@ -193,11 +194,13 @@ const ProductPage = () => {
     <>
       <Toaster />
       <Container style={{ marginTop: "20px" }}>
+      <Card fluid>
+      <Card.Content>
         <Segment>
           
           <Form.Group>
             <Form.Field>
-              <input control={Input} type="number" value={productSummary.amt} disabled />
+              <input className="inp-box-for-amt" control={Input} type="number" value={productSummary.amt} disabled />
               <Button color="red" loading={addingMoney} onClick={() => addBalanceToProduct()}>Add Balance</Button>
             </Form.Field>
           </Form.Group>
@@ -240,6 +243,7 @@ const ProductPage = () => {
             );
           })}
         </Segment> : null }
+        </Card.Content></Card>
       </Container>
     </>
   );
