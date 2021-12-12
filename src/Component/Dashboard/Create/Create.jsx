@@ -7,6 +7,7 @@ import {
   Dropdown,
   Input,
   Message,
+  Select,
 } from "semantic-ui-react";
 import { EditorState } from "draft-js";
 import { convertToHTML } from "draft-convert";
@@ -19,6 +20,17 @@ import web3 from "../../../ethereum/web3";
 import company from "../../../ethereum/company";
 
 const Create = () => {
+  const [account, setAccount] = useState("");
+
+  const setCurrentAccount = async () => {
+    const accounts = await web3.eth.getAccounts();
+    setAccount(accounts[0]);
+  };
+
+  useEffect(() => {
+    setCurrentAccount();
+  }, []);
+
   const [loading, setLoading] = useState(false);
   const [errMessage, setErrMessage] = useState("");
   const [product, setProduct] = useState({
@@ -41,6 +53,16 @@ const Create = () => {
     setProduct({ ...product, [data.name]: data.value });
   };
 
+  const setProductValues = (e) => {
+    setProduct({ ...product, [e.target.name]: e.target.value });
+    console.log("setting review", product);
+  };
+
+  const setDropdownValues = (e, data) => {
+    console.log(data.name, data.value);
+    setProduct({ ...product, [data.name]: data.value });
+  };
+
   const deployProduct = async () => {
     try {
       console.log(product);
@@ -59,7 +81,7 @@ const Create = () => {
           product.gender
         )
         .send({
-          from: "0x61f6fF502bb094bE32a5E5f739c119ccF90c80f6",
+          from: account,
         });
       console.log("this is return data", data);
       toast.success("Success fully deployed product !!");
@@ -74,10 +96,10 @@ const Create = () => {
   };
 
   const genderOptions = [
-    { key: "male", text: "male" },
-    { key: "female", text: "female" },
-    { key: "both", text: "both" },
-    { key: "no", text: "No gender preference" },
+    { key: "male", text: "male", value: "male" },
+    { key: "female", text: "female", value: "female" },
+    { key: "both", text: "both", value: "both" },
+    { key: "no", text: "No gender preference", value: "no" },
   ];
 
   const [editorState, setEditorState] = useState(() =>

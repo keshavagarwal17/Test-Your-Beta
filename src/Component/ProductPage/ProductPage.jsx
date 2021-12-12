@@ -9,7 +9,8 @@ import {
   Modal,
   Form,
   Icon,
-  Dropdown
+  Dropdown,
+  Select
 } from "semantic-ui-react";
 import DOMPurify from "dompurify";
 import toast, { Toaster } from "react-hot-toast";
@@ -27,6 +28,7 @@ import Review from './Review/Review'
 const ProductPage = () => {
     const [client, setClient] = useState(null);
     const [open, setOpen] = useState(false)
+    const [balance, setBalance] = useState(0)
     const [ipfsInstance, setIpfsInstance] = useState(null);
     const [allReviewers, setAllReviewers] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -119,6 +121,9 @@ const ProductPage = () => {
         manager: productInfo[9]
       });
        console.log("this are address opf reviews", addressOfReviewers)
+       const balance = await productInstance.methods.currentBalance().call()
+       console.log("this is balance", balance)
+       setBalance(balance)
        setReviewLen(addressOfReviewers.length)
   }
 
@@ -149,8 +154,8 @@ const ProductPage = () => {
     console.log(convertedContent);
   };
   const boolOptions = [
-    { key: "yes", text: "yes" },
-    { key: "no", text: "no" }
+    { key: "yes", text: "yes",value:"yes" },
+    { key: "no", text: "no",value:"no" }
   ]
   const createMarkup = (html) => {
     return {
@@ -195,6 +200,9 @@ const ProductPage = () => {
     <>
       <Toaster />
       <Container style={{ marginTop: "20px" }}>
+        <Segment>
+          <b>Product Distribution Amount:</b> {balance}
+        </Segment>
         <Segment>
           <b>Title: </b>
           {productSummary.title}
@@ -264,14 +272,20 @@ const ProductPage = () => {
                   
                   <label> Would you recommend this to your friend </label>
                   <Dropdown
-                placeholder="select"
-                name="recommend"
-                fluid
-                selection
-                clearable
-                onChange={(e, data) => setDropdownValues(e, data)}
-                options={boolOptions}
-              />
+                    placeholder="select"
+                    name="recommend"
+                    control={Select}
+                    onChange={(e, { value }) => {
+                      setReview({
+                        ...review,
+                        recommend: value
+                      })
+                    }}
+                    fluid
+                    selection
+                    clearable
+                    options={boolOptions}
+                  />
                   
                   <label> If you find any bug do mention it along with it's screenshots </label>
                   <Editor
@@ -295,6 +309,7 @@ const ProductPage = () => {
             </Modal.Actions>
           </Modal>
         </Segment>
+        {allReviews.length > 0 ?
         <Segment>
         {allReviews.map((element, index) => {
             return (
@@ -309,7 +324,7 @@ const ProductPage = () => {
               />
             );
           })}
-        </Segment>
+        </Segment>: null }
       </Container>
     </>
   );
