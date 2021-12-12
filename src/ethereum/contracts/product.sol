@@ -32,6 +32,7 @@ contract product{
         string cid;
         uint approval;
         address from;
+        uint rating;
     }
     mapping(address => bool) approval;
     string productTitle;
@@ -75,7 +76,7 @@ contract product{
     }
 
 
-    function payToAllReviewers(){
+    function payToAllReviewers() public {
       uint currentMoney = (amountOfResponses/reviewers.length)*totalMoney;
       uint totalRating=0;
       uint i;
@@ -137,10 +138,15 @@ contract product{
         Review memory newReview = Review({
              cid: reviewId,
              approval: 0,
-             from: msg.sender
+             from: msg.sender,
+             rating: 11
         });
         reviews.push(newReview);
         reviewers.push(msg.sender);
+    }
+
+    function rateReview(uint reviewIndex, uint rating) public {
+        reviews[reviewIndex].rating = rating;
     }
     
     function approve(uint index) public notApproved(msg.sender) {

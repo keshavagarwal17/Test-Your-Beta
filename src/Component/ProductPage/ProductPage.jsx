@@ -24,7 +24,7 @@ import product from "../../ethereum/product";
 import web3 from '../../ethereum/web3'
 import Review from './Review/Review'
 
-const IdeaPage = () => {
+const ProductPage = () => {
     const [client, setClient] = useState(null);
     const [open, setOpen] = useState(false)
     const [ipfsInstance, setIpfsInstance] = useState(null);
@@ -313,4 +313,4 @@ const IdeaPage = () => {
   );
 };
 
-export default IdeaPage;
+export default ProductPage;

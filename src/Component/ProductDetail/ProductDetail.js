@@ -9,64 +9,185 @@ import {
   Modal,
   Form,
   Icon,
-  Dropdown,
-  Label
+  Dropdown
 } from "semantic-ui-react";
 import DOMPurify from "dompurify";
 import toast, { Toaster } from "react-hot-toast";
+import { EditorState } from "draft-js";
+// import { options } from "../../../Content/Profile";
+import { convertToHTML } from "draft-convert";
+import { Editor } from "react-draft-wysiwyg";
 import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
+import { create } from "ipfs-http-client";
+import IPFS from "ipfs-mini";
 import product from "../../ethereum/product";
+import web3 from '../../ethereum/web3'
+import Review from './Review/Review'
 
-const ProductDetail = () => {
+const ProductPage = () => {
+    const [client, setClient] = useState(null);
+    const [open, setOpen] = useState(false)
+    const [ipfsInstance, setIpfsInstance] = useState(null);
+    const [allReviewers, setAllReviewers] = useState([]);
+    const [loading, setLoading] = useState(false);
+    const [reviewLen, setReviewLen] = useState(0);
+    const [currentAddress, setCurrentAddress] = useState("");
+    const { productAddress } = useParams();
+    // const [review, setReview] = useState({ title: "", description: "" });
+    const [productInstance, setProductInstance] = useState();
+    const [allReviews, setALlReviews] = useState([]);
+    const [productSummary, setProductSummary] = useState({
+      title: '',
+      link: '',
+      descp: '',
+      amt: '',
+      reviewLength: '',
+    });
+    const [editorState, setEditorState] = useState(() =>
+    EditorState.createEmpty()
+  );
+  const [currentAccount, setCurrentAccount] = useState("");
 
-  const [allReviewers, setAllReviewers] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [currentAddress, setCurrentAddress] = useState("");
-  const { productAddress } = useParams();
-  const [productSummary, setProductSummary] = useState({
-    title: '',
-    description: '',
-    link: '',
-    amt: ''
-    // address: '',
-    // reviewLength: '',
-  });
-  // const [review, setReview] = useState({ title: "", description: "" });
-  const [productInstance, setProductInstance] = useState();
-  const [allReviews, setALlReviews] = useState([]);
+  const setAccount = async () => {
+    const accounts = await web3.eth.getAccounts();
+    setCurrentAccount(accounts[0]);
+   }
 
-  const [open, setOpen] = useState(false);
-  const [openRatingModel, setOpenRatingModel] = useState(false);
+  useEffect(() => {
+    setAccount()
+  },[])
 
+  const [review, setReview] = useState({
+    bestpart: '',
+    improvement: '',
+    stuck: '',
+    rating: 0,
+    recommend: '',
+    bug: ''
+  })
+
+  useEffect(() => {
+    const ipfs = new IPFS({
+      host: "ipfs.infura.io",
+      port: 5001,
+      protocol: "https"
+    });
+    setIpfsInstance(ipfs);
+  },[])
+
+  useEffect(() => {
+    try {
+      console.log(" this is called ", reviewLen);
+      const reviews = [];
+      const reviewLengthArray = Array.from(
+        Array(reviewLen).keys()
+      );
+      console.log(reviewLengthArray, productSummary.reviewLength);
+      const productInstance = product(productAddress);
+      reviewLengthArray.map(async (i) => {
+        
+        const particularReview = await productInstance.methods.reviews(i).call();
+        reviews.push(particularReview);
+        console.log(particularReview);
+        setALlReviews((allReviews) => [...allReviews, particularReview]);
+      });
+      // setALlReviews(reviews)
+      console.log(allReviews)
+    } catch (err) {
+      console.log(err.message);
+    }
+  }, [reviewLen]);
+
+  const setProduct = async () => {
+       // console.log(" this is user age ", age);
+       setCurrentAddress(productAddress);
+       console.log(currentAddress);
+       console.log(productAddress)
+       const productInstance = product(productAddress);
+       setProductInstance(productInstance);
+       const productInfo = await productInstance.methods.getSummary().call();
+       console.log(productInfo)
+       const addressOfReviewers = await productInstance.methods.getAllReviewers().call();
+       setAllReviewers(addressOfReviewers);
+       setProductSummary({
+        title: productInfo[0],
+        description: productInfo[1],
+        link: productInfo[2],
+        amt: productInfo[4],
+        reviewLength: productInfo[7],
+      });
+       console.log("this are address opf reviews", addressOfReviewers)
+       setReviewLen(addressOfReviewers.length)
+  }
+
+  useEffect(() => {
+    setProduct()
+  }, []);
+
+  const setReviewValues = (e) => {
+    setReview({ ...review, [e.target.name]: e.target.value });
+    console.log("setting review", review)
+  };
+
+    const setDropdownValues = (e, data) => {
+    setReview({ ...review, [data.name]: data.value });
+  };
+
+
+  const [convertedContent, setConvertedContent] = useState(null);
+
+  const handleEditorChange = (state) => {
+    setEditorState(state);
+    convertContentToHTML();
+  };
+
+  const convertContentToHTML = () => {
+    const currentContentAsHTML = convertToHTML(editorState.getCurrentContent());
+    setConvertedContent(currentContentAsHTML);
+    console.log(convertedContent);
+  };
+  const boolOptions = [
+    { key: "yes", text: "yes" },
+    { key: "no", text: "no" }
+  ]
   const createMarkup = (html) => {
     return {
       __html: DOMPurify.sanitize(html),
     };
   };
 
-  const setProduct = async () => {
-    // console.log(" this is user age ", age);
-    setCurrentAddress(productAddress);
-    console.log(currentAddress);
-    console.log(productAddress)
-    const productInstance = product(productAddress);
-    setProductInstance(productInstance);
-    const productInfo = await productInstance.methods.getSummary().call();
-    setProductSummary({
-      title: productInfo[0],
-      description: productInfo[1],
-      link: productInfo[2],
-      amt: productInfo[4],
-    });
-    console.log(productInfo)
-    const addressOfReviewers = await productInstance.methods.getAllReviewers().call();
-    setAllReviewers(addressOfReviewers);
-    console.log(addressOfReviewers)
-}
+  const addReviewToNetwork = async (reviewId) => {
+    try {
+      setLoading(true);
+      await productInstance.methods.addReview(reviewId).send({
+        from: currentAccount
+      })
+      setLoading(false)
+      toast.success("Review added successfully")
+    } catch(err) {
+      console.log(err.message)
+      toast.error("Something bad happend !!")
+    }
+  }
 
-useEffect(() => {
- setProduct()
-}, [productAddress]);
+  const addReview = async () => {
+    setReview({
+      ...review, bug: convertedContent
+    })
+    const obj = {
+      bestpart: review.bestpart,
+      improvement: review.improvement,
+      stuck: review.stuck,
+      rating: review.rating,
+      recommend: review.recommend,
+      bug: convertedContent
+    }
+    const reviewId = await ipfsInstance.addJSON(obj);
+    console.log("cid", reviewId)
+    console.log("final review", reviewId)
+    addReviewToNetwork(reviewId)
+  }
+
 
   return (
     <>
@@ -80,111 +201,34 @@ useEffect(() => {
           <b>Description along with installation and usage: </b> <br />
           <div
             className="preview"
-            dangerouslySetInnerHTML={createMarkup(
-              productSummary.description
-            )}
+            dangerouslySetInnerHTML={createMarkup(productSummary.description)}
           ></div>
         </Segment>
         <Segment>
-          <b>Link to Product:</b> {productSummary.link}  <br />
+          <b>Link to Product: </b>{productSummary.link} <br />
         </Segment>
         <Segment>
-          <b>Amount:</b> {productSummary.amt}eth
+          <b>Managed by:</b> this we need to work on
         </Segment>
         <Header as="h1">All Reviews</Header>
         <Segment>
-          <Button
-            color="youtube"
-            floated="right"
-            onClick={() => setOpenRatingModel(true)}
-          >
-            Rate this Review
-          </Button>
-          <p>
-            <b>User : </b> abrakadabra
-          </p>
-          <p>
-            <b>Rating he/she has given to your product : </b> -10
-          </p>
-          <Button color="blue" onClick={() => setOpen(true)}>
-            View Full Review
-          </Button>
+        {allReviews.map((element, index) => {
+            return (
+              <Review
+                key={index}
+                data={element}
+                index={index}
+                productAddress={productAddress}
+                allReviewers={allReviewers}
+                ipfsInstance = {ipfsInstance}
+                // isAdmin={false}
+              />
+            );
+          })}
         </Segment>
-        <Segment>
-            <Label as='a' color='teal' ribbon='right'>
-            Review Rating: 5
-            </Label>
-          <p>
-            <b>User : </b> abrakadabra
-          </p>
-          <p>
-            <b>Rating he/she has given to your product : </b> -10
-          </p>
-          <Button color="blue" onClick={() => setOpen(true)}>
-            View Full Review
-          </Button>
-        </Segment>
-        <Modal
-          closeIcon
-          open={openRatingModel}
-          onClose={() => setOpenRatingModel(false)}
-          onOpen={() => setOpenRatingModel(true)}
-        >
-          <Header as="h3" content="Review Rating" />
-          <Modal.Content>
-            <Form>
-              <Form.Field>
-                <label>
-                  How much you will rate this review in the range of 0 to 10(0
-                  for worst and 10 for best)
-                </label>
-                <input
-                  name="rating"
-                  type="number"
-                  onChange={(e) => console.log(e)}
-                />
-              </Form.Field>
-            </Form>
-          </Modal.Content>
-          <Modal.Actions>
-              <Button
-                color="green"
-              >
-                Give Rating
-              </Button>
-            </Modal.Actions>
-        </Modal>
-        <Modal
-          closeIcon
-          open={open}
-          onClose={() => setOpen(false)}
-          onOpen={() => setOpen(true)}
-        >
-          <Header as="h2" content="User Review" />
-          <Modal.Content>
-            <h3> Best part of our product which you like </h3>
-            <p>Nothing is good</p>
-            <h3> What can be improved further </h3>
-            <p>
-              You should scrap out your whole idea, this is the least you can
-              do.
-            </p>
-            <h3> Did it stuck any where while using it </h3>
-            <p>question should be like this "did it work any where?"</p>
-            <h3> How much you will rate on rating on 10 </h3>
-            <p>-10</p>
-            <h3> Would you recommend this to your friend </h3>
-            <p>Never ever</p>
-            <h3>
-              {" "}
-              If you find any bug do mention it along with it's screenshots{" "}
-            </h3>
-            <p>your product is not a product it is just a collection of bug</p>
-          </Modal.Content>
-        </Modal>
       </Container>
     </>
   );
 };
 
-export default ProductDetail;
+export default ProductPage;
