@@ -7,6 +7,7 @@ import {
   Dropdown,
   Input,
   Message,
+  Select
 } from "semantic-ui-react";
 import { EditorState } from "draft-js";
 import { convertToHTML } from "draft-convert";
@@ -39,6 +40,7 @@ const Create = () => {
     };
   
       const setDropdownValues = (e, data) => {
+        console.log(data.name,data.value)
       setProduct({ ...product, [data.name]: data.value });
     };
  
@@ -75,10 +77,10 @@ const Create = () => {
   };
 
    const genderOptions = [
-       { key: "male", text: "male" },
-       { key: "female", text: "female" },
-       { key: "both", text: "both" },
-       { key: "no", text: "No gender preference" },
+       { key: "male", text: "male",value: "male" },
+       { key: "female", text: "female",value: "female" },
+       { key: "both", text: "both",value: "both" },
+       { key: "no", text: "No gender preference",value: "no" },
    ]
 
   const [editorState, setEditorState] = useState(() =>

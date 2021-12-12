@@ -9,7 +9,8 @@ import {
   Modal,
   Form,
   Icon,
-  Dropdown
+  Dropdown,
+  Select
 } from "semantic-ui-react";
 import DOMPurify from "dompurify";
 import toast, { Toaster } from "react-hot-toast";
@@ -153,8 +154,8 @@ const ProductPage = () => {
     console.log(convertedContent);
   };
   const boolOptions = [
-    { key: "yes", text: "yes" },
-    { key: "no", text: "no" }
+    { key: "yes", text: "yes",value:"yes" },
+    { key: "no", text: "no",value:"no" }
   ]
   const createMarkup = (html) => {
     return {
@@ -271,14 +272,20 @@ const ProductPage = () => {
                   
                   <label> Would you recommend this to your friend </label>
                   <Dropdown
-                placeholder="select"
-                name="recommend"
-                fluid
-                selection
-                clearable
-                onChange={(e, data) => setDropdownValues(e, data)}
-                options={boolOptions}
-              />
+                    placeholder="select"
+                    name="recommend"
+                    control={Select}
+                    onChange={(e, { value }) => {
+                      setReview({
+                        ...review,
+                        recommend: value
+                      })
+                    }}
+                    fluid
+                    selection
+                    clearable
+                    options={boolOptions}
+                  />
                   
                   <label> If you find any bug do mention it along with it's screenshots </label>
                   <Editor
