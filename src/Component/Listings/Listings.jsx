@@ -77,7 +77,7 @@ const Exploration = () => {
                   <NavLink
                     exact
                     activeClassName="current"
-                    to={`/exploration/${product.address}`}
+                    to={`/user/exploration/${product.address}`}
                   >
                     <ProductCard 
                     data={product}

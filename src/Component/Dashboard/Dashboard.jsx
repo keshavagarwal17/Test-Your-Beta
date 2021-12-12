@@ -45,7 +45,6 @@ const Dashboard = () => {
       <div>
         <div className="page">
           <div className="body-area">
-            <Navigation />
             <div className="body-area-content">
               <div className="body-area-content-box">
                 <div className="status">
