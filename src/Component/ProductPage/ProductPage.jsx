@@ -27,6 +27,7 @@ import Review from './Review/Review'
 const ProductPage = () => {
     const [client, setClient] = useState(null);
     const [open, setOpen] = useState(false)
+    const [balance, setBalance] = useState(0)
     const [ipfsInstance, setIpfsInstance] = useState(null);
     const [allReviewers, setAllReviewers] = useState([]);
     const [loading, setLoading] = useState(false);
@@ -119,6 +120,9 @@ const ProductPage = () => {
         manager: productInfo[9]
       });
        console.log("this are address opf reviews", addressOfReviewers)
+       const balance = await productInstance.methods.currentBalance().call()
+       console.log("this is balance", balance)
+       setBalance(balance)
        setReviewLen(addressOfReviewers.length)
   }
 
@@ -195,6 +199,9 @@ const ProductPage = () => {
     <>
       <Toaster />
       <Container style={{ marginTop: "20px" }}>
+        <Segment>
+          Product Distribution Amount: {balance}
+        </Segment>
         <Segment>
           <b>Title: </b>
           {productSummary.title}
