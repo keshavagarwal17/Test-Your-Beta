@@ -45,7 +45,7 @@ contract product{
     uint totalMoney;
     uint minAge;
     uint maxAge;
-    string sex;
+    uint reqMoney;
     address manager;
     Review[] public reviews;
     mapping(address=>uint) Ratings;
@@ -73,12 +73,12 @@ contract product{
     constructor(string memory title,string memory desc,string memory livelink,uint responses,uint money,uint ageMin, uint ageMax, string memory gender, address from) NotZero(responses,money)  {
         productTitle = title;
         productDescription = desc;
-        totalMoney = money;
+        totalMoney = 0;
         productLiveLink = livelink;
         amountOfResponses = responses;
         minAge = ageMin;
         maxAge = ageMax;
-        sex = gender;
+        reqMoney = money;
         manager = from;
     }
 
@@ -133,7 +133,7 @@ contract product{
             uint,
             uint,
             uint,
-            string memory,
+            uint,
             uint,
             address
         )
@@ -146,7 +146,7 @@ contract product{
     totalMoney,
     minAge,
     maxAge,
-    sex,
+    reqMoney,
     reviews.length,
     manager
         );
