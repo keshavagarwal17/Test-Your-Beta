@@ -200,7 +200,7 @@ const ProductPage = () => {
       <Toaster />
       <Container style={{ marginTop: "20px" }}>
         <Segment>
-          Product Distribution Amount: {balance}
+          <b>Product Distribution Amount:</b> {balance}
         </Segment>
         <Segment>
           <b>Title: </b>
@@ -302,6 +302,7 @@ const ProductPage = () => {
             </Modal.Actions>
           </Modal>
         </Segment>
+        {allReviews.length > 0 ?
         <Segment>
         {allReviews.map((element, index) => {
             return (
@@ -316,7 +317,7 @@ const ProductPage = () => {
               />
             );
           })}
-        </Segment>
+        </Segment>: null }
       </Container>
     </>
   );

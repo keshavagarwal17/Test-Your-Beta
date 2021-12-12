@@ -35,6 +35,7 @@ contract product{
         uint approval;
         address from;
         uint rating;
+        bool paid;
     }
     mapping(address => bool) approval;
     string productTitle;
@@ -63,6 +64,12 @@ contract product{
         require(approval[approver] != true);
         _;
     }
+
+    modifier check(uint reviewIndex) {
+        require(reviews[reviewIndex].paid != true);
+        _;
+    }
+
     constructor(string memory title,string memory desc,string memory livelink,uint responses,uint money,uint ageMin, uint ageMax, string memory gender, address from) NotZero(responses,money)  {
         productTitle = title;
         productDescription = desc;
@@ -150,10 +157,16 @@ contract product{
              cid: reviewId,
              approval: 0,
              from: msg.sender,
-             rating: 11
+             rating: 11,
+             paid: false
         });
         reviews.push(newReview);
         reviewers.push(msg.sender);
+    }
+
+    function rewardReviewer(address reviewer, uint amt, uint reviewIndex) check(reviewIndex) public {
+        reviewer.transfer(amt);
+        reviews[reviewIndex].paid = true;
     }
 
     function rateReview(uint reviewIndex, uint rating) public {

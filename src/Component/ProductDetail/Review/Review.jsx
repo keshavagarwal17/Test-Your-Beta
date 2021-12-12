@@ -22,11 +22,13 @@ import DOMPurify from "dompurify";
 const Review = (props) => {
   const [productInstance, setProductInstance] = useState();
   const [loadingRating, setLoading] = useState(false);
+  const [rewardLoader, setRewardLoader] = useState(false)
   const [transactionLoading, setTransactionLoading] = useState(false);
   const [openRating, setOpenRating] = useState(false);
   const [ipfsInstance, setIpfsInstance] = useState(null);
   const [addMoney, setAddMoney] = useState({ amt: "" });
   const [currentAccount, setCurrentAccount] = useState('')
+  const [rewardAmt, setRewardAmt] = useState(0)
   const [review, setReview] = useState({
     bestpart: '',
     improvement: '',
@@ -127,6 +129,23 @@ const setAccount = async () => {
       setReviewData()
   }, [ipfsInstance])
 
+  const rewardReview = async (reviewIndex, userAddress) => {
+      try {
+          setRewardLoader(true)
+        await productInstance.methods.rewardReviewer(
+            userAddress,
+            rewardAmt,
+            reviewIndex,
+        ).send({
+            from: currentAccount,
+        })
+        toast.success("rewarded reviewer successfully !!")
+        setRewardLoader(false)
+      } catch(err) {
+          console.log(err.message)
+      }
+  }
+
   return (
     <>
       <Toaster />
@@ -145,7 +164,7 @@ const setAccount = async () => {
               do.
             </p>
             <h3> Did it stuck any where while using it </h3>
-            <p>{review.improvement}</p>
+            <p>{review.stuck}</p>
             <h3> How much you will rate on rating on 10 </h3>
             <p>{review.rating}</p>
             <h3> Would you recommend this to your friend </h3>
@@ -159,6 +178,10 @@ const setAccount = async () => {
           ></div>
           </Segment>
           <p> <Icon name="user" /> Approval:{props.data.approval}</p>
+              <Form.Field>
+                  <input type="number" placeholder="Reward reviewer"  onClick={(e) => setRewardAmt(e.target.value)} />
+              </Form.Field>
+          <Button loading={rewardLoader} onClick={() => rewardReview(props.index, props.data.from)}>Reward Reviewer</Button>
         </Card.Content>
         <Card.Content extra>
           {/* <Modal

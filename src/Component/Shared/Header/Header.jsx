@@ -128,7 +128,7 @@ const Header = () => {
   return (
     <div className="head">
       <Link to="/" style={{ color: "black" }}>
-        <h3>B-Test</h3>
+        <h3>Test your Beta</h3>
       </Link>
       {/* <img className="head-logo" src="images/logo.png" alt="logo" /> */}
       <div className="head-content">

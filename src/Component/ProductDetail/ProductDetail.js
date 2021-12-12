@@ -9,7 +9,8 @@ import {
   Modal,
   Form,
   Icon,
-  Dropdown
+  Dropdown,
+  Input
 } from "semantic-ui-react";
 import DOMPurify from "dompurify";
 import toast, { Toaster } from "react-hot-toast";
@@ -193,15 +194,17 @@ const ProductPage = () => {
       <Toaster />
       <Container style={{ marginTop: "20px" }}>
         <Segment>
-          <Form>
+          
+          <Form.Group>
             <Form.Field>
-              <input type="number" value={productSummary.amt} disabled />
-              <Button loading={addingMoney} onClick={() => addBalanceToProduct()}>Add Balance</Button>
+              <input control={Input} type="number" value={productSummary.amt} disabled />
+              <Button color="red" loading={addingMoney} onClick={() => addBalanceToProduct()}>Add Balance</Button>
             </Form.Field>
-          </Form>
+          </Form.Group>
         </Segment>
         <Segment>
-          Product Distribution balance: {balance}
+        <b>
+           Product Distribution balance:</b> {balance}
         </Segment>
         <Segment>
           <b>Title: </b>
@@ -221,6 +224,7 @@ const ProductPage = () => {
           <b>Managed by:</b> {productSummary.manager}
         </Segment>
         <Header as="h1">All Reviews</Header>
+        {allReviews.length > 0 ?
         <Segment>
         {allReviews.map((element, index) => {
             return (
@@ -235,7 +239,7 @@ const ProductPage = () => {
               />
             );
           })}
-        </Segment>
+        </Segment> : null }
       </Container>
     </>
   );
