@@ -65,8 +65,9 @@ contract product{
         _;
     }
 
-    modifier check(uint reviewIndex) {
+    modifier checkAndBalance(uint reviewIndex, uint amt) {
         require(reviews[reviewIndex].paid != true);
+        require(amt >= totalMoney);
         _;
     }
 
@@ -164,9 +165,11 @@ contract product{
         reviewers.push(msg.sender);
     }
 
-    function rewardReviewer(address reviewer, uint amt, uint reviewIndex) check(reviewIndex) public {
-        reviewer.transfer(amt);
+    function rewardReviewer(uint amt, uint reviewIndex) public {
+        // reviewer.transfer(amt);
+        reviews[reviewIndex].from.transfer(amt);
         reviews[reviewIndex].paid = true;
+        totalMoney = totalMoney - amt;
     }
 
     function rateReview(uint reviewIndex, uint rating) public {

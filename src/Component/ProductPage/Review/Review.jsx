@@ -119,7 +119,6 @@ const setAccount = async () => {
             <h3> What can be improved further </h3>
             <p>
                 {review.improvement}
-              do.
             </p>
             <h3> Did it stuck any where while using it </h3>
             <p>{review.improvement}</p>

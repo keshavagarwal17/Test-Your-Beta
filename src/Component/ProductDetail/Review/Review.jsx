@@ -132,9 +132,9 @@ const setAccount = async () => {
   const rewardReview = async (reviewIndex, userAddress) => {
       try {
           setRewardLoader(true)
+          console.log(rewardAmt + "and" + reviewIndex)
         await productInstance.methods.rewardReviewer(
-            userAddress,
-            rewardAmt,
+            parseInt(rewardAmt),
             reviewIndex,
         ).send({
             from: currentAccount,
@@ -161,7 +161,6 @@ const setAccount = async () => {
             <h3> What can be improved further </h3>
             <p>
                 {review.improvement}
-              do.
             </p>
             <h3> Did it stuck any where while using it </h3>
             <p>{review.stuck}</p>
@@ -177,9 +176,12 @@ const setAccount = async () => {
             dangerouslySetInnerHTML={createMarkup(review.bug)}
           ></div>
           </Segment>
+          {props.data.paid === true ? <Label as='a' color='red' ribbon='right'>
+            Review Paid
+            </Label> : null }
           <p> <Icon name="user" /> Approval:{props.data.approval}</p>
               <Form.Field>
-                  <input type="number" placeholder="Reward reviewer"  onClick={(e) => setRewardAmt(e.target.value)} />
+                  <input type="number" placeholder="Reward reviewer"  onChange={(e) => setRewardAmt(e.target.value)} />
               </Form.Field>
           <Button loading={rewardLoader} onClick={() => rewardReview(props.index, props.data.from)}>Reward Reviewer</Button>
         </Card.Content>
