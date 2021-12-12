@@ -33,6 +33,8 @@ const ProductPage = () => {
     const [reviewLen, setReviewLen] = useState(0);
     const [currentAddress, setCurrentAddress] = useState("");
     const { productAddress } = useParams();
+    const [addingMoney, setAddingMoney] = useState(false)
+    const [balance, setBalance] = useState(0) 
     // const [review, setReview] = useState({ title: "", description: "" });
     const [productInstance, setProductInstance] = useState();
     const [allReviews, setALlReviews] = useState([]);
@@ -118,8 +120,12 @@ const ProductPage = () => {
         reviewLength: productInfo[7],
         manager: productInfo[9]
       });
+      const balance = await productInstance.methods.currentBalance().call()
+      console.log("this is balance", balance)
+      setBalance(balance)
        console.log("this are address opf reviews", addressOfReviewers)
        setReviewLen(addressOfReviewers.length)
+      // getCurrentBalance()
   }
 
   useEffect(() => {
@@ -134,6 +140,16 @@ const ProductPage = () => {
     const setDropdownValues = (e, data) => {
     setReview({ ...review, [data.name]: data.value });
   };
+
+  // const getCurrentBalance = async () =>{
+  //   try {
+  //     const balance = await productInstance.methods.currentBalance().call()
+  //     console.log("this is balance", balance)
+  //     setBalance(balance)
+  //   } catch(err) {
+  //     console.log(err.message)
+  //   }
+  // }
 
 
   const [convertedContent, setConvertedContent] = useState(null);
@@ -158,11 +174,35 @@ const ProductPage = () => {
     };
   };
 
+  const addBalanceToProduct = async () => {
+    try {
+      setAddingMoney(true)
+      await productInstance.methods.addBalance().send({
+        from: currentAccount,
+        value: productSummary.amt
+      })
+      setAddingMoney(false)
+    } catch(err){
+      console.log(err.message)
+    }
+  }
+
 
   return (
     <>
       <Toaster />
       <Container style={{ marginTop: "20px" }}>
+        <Segment>
+          <Form>
+            <Form.Field>
+              <input type="number" value={productSummary.amt} disabled />
+              <Button loading={addingMoney} onClick={() => addBalanceToProduct()}>Add Balance</Button>
+            </Form.Field>
+          </Form>
+        </Segment>
+        <Segment>
+          Product Distribution balance: {balance}
+        </Segment>
         <Segment>
           <b>Title: </b>
           {productSummary.title}

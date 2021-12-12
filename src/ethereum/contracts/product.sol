@@ -4,6 +4,7 @@ contract company{
     product[] public deployedProducts;
     uint numberOfProducts;
     mapping(address=>product[]) allProducts;
+    // mapping(product=>uint) public productBalance;
 
       modifier NotZero(uint responses, uint money){
         require(responses != 0);
@@ -15,6 +16,7 @@ contract company{
         product newProduct = new product(title,desc,livelink,responses,money, ageMin, ageMax, gender, msg.sender);
         allProducts[msg.sender].push(newProduct);
         deployedProducts.push(newProduct);
+        // productBalance[product] = msg.value;
         numberOfProducts++;
     }
 
@@ -48,6 +50,7 @@ contract product{
     mapping(address=>uint) Ratings;
     address[] public reviewers;
     mapping(address=>Review) reviewByUser;
+    uint public productBalance;
 
 
     modifier NotZero(uint responses, uint money){
@@ -60,7 +63,7 @@ contract product{
         require(approval[approver] != true);
         _;
     }
-    constructor(string memory title,string memory desc,string memory livelink,uint responses,uint money,uint ageMin, uint ageMax, string memory gender, address from) NotZero(responses,money){
+    constructor(string memory title,string memory desc,string memory livelink,uint responses,uint money,uint ageMin, uint ageMax, string memory gender, address from) NotZero(responses,money)  {
         productTitle = title;
         productDescription = desc;
         totalMoney = money;
@@ -70,6 +73,10 @@ contract product{
         maxAge = ageMax;
         sex = gender;
         manager = from;
+    }
+
+    function addBalance() public payable {
+        totalMoney = msg.value;
     }
 
     function sendMoney(address receiver, uint amount) public{
