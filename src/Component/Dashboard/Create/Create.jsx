@@ -21,6 +21,17 @@ import company from '../../../ethereum/company'
 
 const Create = () => {
 
+  const [account, setAccount] = useState('');
+
+  const setCurrentAccount = async () => {
+    const accounts = await web3.eth.getAccounts();
+    setAccount(accounts[0])
+  }
+
+  useEffect(() => {
+    setCurrentAccount()
+  },[])
+
   const [loading, setLoading] = useState(false);
   const [errMessage, setErrMessage] = useState('');
   const [product, setProduct] = useState({
@@ -62,7 +73,7 @@ const Create = () => {
           product.gender,
         )
         .send({
-          from: '0xE7186aE499D32D848fd0544ED199dd731e832523',
+          from: account,
         });
         console.log("this is return data", data)
       toast.success("Success fully deployed product !!");
