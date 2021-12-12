@@ -179,13 +179,16 @@ const ProductPage = () => {
   const addBalanceToProduct = async () => {
     try {
       setAddingMoney(true)
+      
       await productInstance.methods.addBalance().send({
         from: currentAccount,
         value: productSummary.amt
       })
+      toast.success("Balance added")
       setAddingMoney(false)
     } catch(err){
       console.log(err.message)
+      toast.success("Something wrong happened")
     }
   }
 
@@ -242,7 +245,7 @@ const ProductPage = () => {
               />
             );
           })}
-        </Segment> : null }
+        </Segment> : <h3>No reviews till now !!</h3> }
         </Card.Content></Card>
       </Container>
     </>

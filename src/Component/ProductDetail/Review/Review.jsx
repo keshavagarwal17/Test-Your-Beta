@@ -129,19 +129,21 @@ const Review = (props) => {
   }, [ipfsInstance]);
 
   const rewardReview = async (reviewIndex, userAddress) => {
-    try {
-      setRewardLoader(true);
-      await productInstance.methods
-        .rewardReviewer(userAddress, rewardAmt, reviewIndex)
-        .send({
-          from: currentAccount,
-        });
-      toast.success("rewarded reviewer successfully !!");
-      setRewardLoader(false);
-    } catch (err) {
-      console.log(err.message);
-    }
-  };
+      try {
+          setRewardLoader(true)
+          console.log(rewardAmt + "and" + reviewIndex)
+        await productInstance.methods.rewardReviewer(
+            parseInt(rewardAmt),
+            reviewIndex,
+        ).send({
+            from: currentAccount,
+        })
+        toast.success("rewarded reviewer successfully !!")
+        setRewardLoader(false)
+      } catch(err) {
+          console.log(err.message)
+      }
+  }
 
   return (
     <>
@@ -222,8 +224,7 @@ const Review = (props) => {
             <p>{review.bestpart}</p>
             <h3> What can be improved further </h3>
             <p>
-              {review.improvement}
-              do.
+                {review.improvement}
             </p>
             <h3> Did it stuck any where while using it </h3>
             <p>{review.stuck}</p>
@@ -239,7 +240,10 @@ const Review = (props) => {
               dangerouslySetInnerHTML={createMarkup(review.bug)}
             ></div>
           </Segment>
-        </Card.Content>
+          {props.data.paid === true ? <Label as='a' color='red' ribbon='right'>
+            Review Paid
+            </Label> : null }
+          </Card.Content>
       </Card>
     </>
   );
