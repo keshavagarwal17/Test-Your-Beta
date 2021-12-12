@@ -18,7 +18,7 @@ const IdeaCard = (props) => {
             {props.data.productInfo[0]}
             </Card.Header>
         <Card.Description>
-          Creator: {props.data.productInfo[1].slice(0, 20) + "..."}
+          Creator: {props.data.address.slice(0, 20) + "..."}
         </Card.Description>
       </Card.Content>
     </Card>
