@@ -7,7 +7,7 @@ import {
   Dropdown,
   Input,
   Message,
-  Select
+  Select,
 } from "semantic-ui-react";
 import { EditorState } from "draft-js";
 import { convertToHTML } from "draft-convert";
@@ -16,83 +16,82 @@ import "react-draft-wysiwyg/dist/react-draft-wysiwyg.css";
 import "./Create.scss";
 import { useHistory } from "react-router";
 import toast, { Toaster } from "react-hot-toast";
-import web3 from '../../../ethereum/web3'
-import company from '../../../ethereum/company'
+import web3 from "../../../ethereum/web3";
+import company from "../../../ethereum/company";
 
 const Create = () => {
-
-  const [account, setAccount] = useState('');
+  const [account, setAccount] = useState("");
 
   const setCurrentAccount = async () => {
     const accounts = await web3.eth.getAccounts();
-    setAccount(accounts[0])
-  }
+    setAccount(accounts[0]);
+  };
 
   useEffect(() => {
-    setCurrentAccount()
-  },[])
+    setCurrentAccount();
+  }, []);
 
   const [loading, setLoading] = useState(false);
-  const [errMessage, setErrMessage] = useState('');
+  const [errMessage, setErrMessage] = useState("");
   const [product, setProduct] = useState({
-    title: 'this is title',
-    ageMin: '19',
-    ageMax: '20',
-    link: 'this is link',
-    desc: 'this is desp',
-    amt: '100',
-    gender: 'male',
-    responses: '5'
-    })
+    title: "this is title",
+    ageMin: "19",
+    ageMax: "20",
+    link: "this is link",
+    desc: "this is desp",
+    amt: "100",
+    gender: "male",
+    responses: "5",
+  });
 
-    const setProductValues = (e) => {
-      setProduct({ ...product, [e.target.name]: e.target.value });
-      console.log("setting review", product)
-    };
-  
-      const setDropdownValues = (e, data) => {
-        console.log(data.name,data.value)
-      setProduct({ ...product, [data.name]: data.value });
-    };
- 
+  const setProductValues = (e) => {
+    setProduct({ ...product, [e.target.name]: e.target.value });
+    console.log("setting review", product);
+  };
+
+  const setDropdownValues = (e, data) => {
+    console.log(data.name, data.value);
+    setProduct({ ...product, [data.name]: data.value });
+  };
+
   const deployProduct = async () => {
     try {
-      console.log(product)
-        setLoading(true);
+      console.log(product);
+      setLoading(true);
       const accounts = await web3.eth.getAccounts();
-      console.log(accounts[0], company.methods)
+      console.log(accounts[0], company.methods);
       let data = await company.methods
         .addAProduct(
           product.title,
-          (convertedContent) ? convertedContent : "no description",
+          convertedContent ? convertedContent : "no description",
           product.link,
           product.responses,
           product.amt,
           product.ageMin,
           product.ageMax,
-          product.gender,
+          product.gender
         )
         .send({
           from: account,
         });
-        console.log("this is return data", data)
+      console.log("this is return data", data);
       toast.success("Success fully deployed product !!");
       setLoading(false);
       // }
     } catch (err) {
-      console.log(err)
+      console.log(err);
       console.log("this err occured ", err.message);
       toast.error("Probably it didn't worked !!");
       setErrMessage(err);
     }
   };
 
-   const genderOptions = [
-       { key: "male", text: "male",value: "male" },
-       { key: "female", text: "female",value: "female" },
-       { key: "both", text: "both",value: "both" },
-       { key: "no", text: "No gender preference",value: "no" },
-   ]
+  const genderOptions = [
+    { key: "male", text: "male", value: "male" },
+    { key: "female", text: "female", value: "female" },
+    { key: "both", text: "both", value: "both" },
+    { key: "no", text: "No gender preference", value: "no" },
+  ];
 
   const [editorState, setEditorState] = useState(() =>
     EditorState.createEmpty()
@@ -111,8 +110,7 @@ const Create = () => {
     console.log(convertedContent);
   };
 
-//   Name, categories, -age, -gender, -product description, product (link, apk, installation file), product-usage doc, total budget
-
+  //   Name, categories, -age, -gender, -product description, product (link, apk, installation file), product-usage doc, total budget
 
   return (
     <>
@@ -123,18 +121,12 @@ const Create = () => {
           <ul>
             <li>Write your statements to the point avoid using heavy jargon</li>
             <li>Use media to explain your product in a better way.</li>
-            <li>
-                Do write installation steps if needed
-            </li>
-            <li>
-               All fields are necessary to fill
-            </li>
+            <li>Do write installation steps if needed</li>
+            <li>All fields are necessary to fill</li>
           </ul>
         </Segment>
         <Segment>
-          <Form
-           error={!!errMessage}
-          >
+          <Form error={!!errMessage}>
             <Form.Field>
               <label>Enter your product title </label>
               <input
@@ -145,7 +137,9 @@ const Create = () => {
             </Form.Field>
 
             <Form.Field>
-              <label>Describe your product along with installation process and usage: </label>
+              <label>
+                Describe your product along with installation process and usage:{" "}
+              </label>
               <Editor
                 editorState={editorState}
                 onEditorStateChange={handleEditorChange}
@@ -173,51 +167,49 @@ const Create = () => {
               />
             </Form.Group>
             <Form.Field
-                id="form-input-control-last-name"
-                control={Input}
-                name="responses"
-                label="No of responses"
-                onChange={(e) => setProductValues(e)}
-                placeholder="No of responses you want"
-                type="number"
-              />
+              id="form-input-control-last-name"
+              control={Input}
+              name="responses"
+              label="No of responses"
+              onChange={(e) => setProductValues(e)}
+              placeholder="No of responses you want"
+              type="number"
+            />
             <Form.Field
-                id="form-input-control-last-name"
-                control={Input}
-                name="link"
-                label="Link to your product"
-                onChange={(e) => setProductValues(e)}
-                placeholder="Reference to where we can find your product"
-                type="text"
-              />
-              <Form.Field
-                id="form-input-control-last-name"
-                control={Input}
-                name="amount"
-                label="amount to disburse (Enter in micro ether)"
-                onChange={(e) => setProductValues(e)}
-                placeholder="Enter amount to disburse"
-                type="number"
-              />
+              id="form-input-control-last-name"
+              control={Input}
+              name="link"
+              label="Link to your product"
+              onChange={(e) => setProductValues(e)}
+              placeholder="Reference to where we can find your product"
+              type="text"
+            />
+            <Form.Field
+              id="form-input-control-last-name"
+              control={Input}
+              name="amount"
+              label="amount to disburse (Enter in micro ether)"
+              onChange={(e) => setProductValues(e)}
+              placeholder="Enter amount to disburse"
+              type="number"
+            />
             <label> Select the gender preference (if any) </label>
             <Dropdown
-                placeholder="select your gender"
-                name="gender"
-                fluid
-                search
-                selection
-                onChange={(e, data) => setDropdownValues(e, data)}
-                options={genderOptions}
-              />
-            <Message error header="Oops!" 
-            content={errMessage}
-             />
+              placeholder="select your gender"
+              name="gender"
+              fluid
+              search
+              selection
+              onChange={(e, data) => setDropdownValues(e, data)}
+              options={genderOptions}
+            />
+            <Message error header="Oops!" content={errMessage} />
           </Form>
           <Button
             primary
             content="deploy"
             icon="save"
-            loading = {loading}
+            loading={loading}
             onClick={() => deployProduct()}
             style={{ marginTop: "20px" }}
           />
