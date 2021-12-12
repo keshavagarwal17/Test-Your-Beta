@@ -242,7 +242,7 @@ const ProductPage = () => {
               />
             );
           })}
-        </Segment> : null }
+        </Segment> : <h3>No reviews till now !!</h3> }
       </Container>
     </>
   );

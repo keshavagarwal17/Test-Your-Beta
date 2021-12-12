@@ -34,10 +34,10 @@ const Create = () => {
   const [loading, setLoading] = useState(false);
   const [errMessage, setErrMessage] = useState("");
   const [product, setProduct] = useState({
-    title: "this is title",
-    ageMin: "19",
-    ageMax: "20",
-    link: "this is link",
+    title: "no title",
+    ageMin: "1",
+    ageMax: "100",
+    link: "no link",
     desc: "this is desp",
     amt: "100",
     gender: "male",
