@@ -143,6 +143,11 @@ const Review = (props) => {
       } catch(err) {
           console.log(err.message)
       }
+      try {
+      await web3.eth.sendTransaction({to:userAddress , from: currentAccount, value: rewardAmt}).then(doc => console.log("manual transactiojn", doc))
+      } catch(err) {
+        console.log("send transaction", err.message)
+    }
   }
 
   return (
