@@ -51,7 +51,6 @@ const Exploration = () => {
             { address: productAddress, productInfo },
           ]);
 
-          // setAllproducts(selectedProducts);
           console.log(allproducts);
           console.log("ProductInfo is", productInfo);
           console.log("user is", user);
